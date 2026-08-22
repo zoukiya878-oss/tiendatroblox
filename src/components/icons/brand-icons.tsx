@@ -10,13 +10,6 @@ export function FacebookIcon({ className }: { className?: string }) {
 }
 
 export function ZaloIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
-      <rect x="2" y="2" width="20" height="20" rx="5" />
-      <path
-        fill="var(--zalo-fg, white)"
-        d="M7.2 8.4h4.6c.35 0 .58.37.42.68l-3.1 5.62h2.68a.4.4 0 0 1 0 .8H6.9a.42.42 0 0 1-.37-.63l3.1-5.63H7.2a.42.42 0 0 1 0-.84Zm7.5 6.9c-1.32 0-2.1-.98-2.1-2.35 0-1.62 1.03-3.15 2.5-3.15 1.32 0 2.1.98 2.1 2.35 0 1.62-1.03 3.15-2.5 3.15Zm.28-4.66c-.72 0-1.24.98-1.24 2.05 0 .82.36 1.4 1 1.4.72 0 1.24-.98 1.24-2.05 0-.82-.36-1.4-1-1.4Zm3.87-.36h.8v4.86h-.8V10.28Z"
-      />
-    </svg>
-  );
+  // eslint-disable-next-line @next/next/no-img-element -- brand asset, decorative icon size only
+  return <img src="/zalo-icon.png" alt="Zalo" className={className} />;
 }

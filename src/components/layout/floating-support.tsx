@@ -12,9 +12,9 @@ export function FloatingSupport({ settings }: { settings: SiteSettings }) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Zalo"
-          className="flex size-12 items-center justify-center rounded-full bg-[#0068FF] text-white shadow-lg shadow-black/25 transition-transform hover:scale-110 animate-bounce"
+          className="flex size-12 items-center justify-center overflow-hidden rounded-full shadow-lg shadow-black/25 transition-transform hover:scale-110 animate-bounce"
         >
-          <ZaloIcon className="size-7" />
+          <ZaloIcon className="size-full" />
         </a>
       )}
       {settings.facebookUrl && (

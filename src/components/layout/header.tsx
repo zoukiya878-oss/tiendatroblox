@@ -59,7 +59,7 @@ export async function Header({ settings }: { settings: SiteSettings }) {
               className="h-9 w-auto rounded-md sm:h-10"
             />
             <span className="bg-gradient-to-r from-primary via-brand-pink to-accent bg-clip-text text-transparent">
-              {settings.siteName}
+              Roblox
             </span>
           </Link>
 

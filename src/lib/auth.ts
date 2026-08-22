@@ -7,6 +7,10 @@ import { prisma } from "./prisma";
 import { findOrCreateOAuthUser } from "@/modules/auth/find-or-create-oauth-user";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  // ponytail: trust the request Host header so OAuth redirect_uri matches
+  // whichever origin the user actually hit (localhost or the ngrok tunnel) —
+  // without this NextAuth falls back to a hardcoded localhost base URL in dev.
+  trustHost: true,
   session: { strategy: "jwt" },
   pages: { signIn: "/dang-nhap" },
   providers: [

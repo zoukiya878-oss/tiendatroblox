@@ -1,0 +1,467 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Auth / Users ----------
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+  STAFF
+  SUPPORT
+  SUPER_ADMIN
+}
+
+model User {
+  id            String   @id @default(cuid())
+  username      String   @unique
+  email         String   @unique
+  passwordHash  String
+  role          UserRole @default(CUSTOMER)
+  locked        Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  wallet              Wallet?
+  walletTransactions  WalletTransaction[]
+  orders              Order[]
+  carts               Cart[]
+  topups              Topup[]
+  couponUsages        CouponUsage[]
+  passwordResetTokens PasswordResetToken[]
+  auditLogs           AuditLog[]
+  blogPosts           BlogPost[]
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ---------- Wallet ----------
+
+model Wallet {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  balance   BigInt   @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  transactions WalletTransaction[]
+}
+
+enum WalletTransactionType {
+  TOPUP
+  PURCHASE
+  REFUND
+  ADMIN_ADJUSTMENT
+  BONUS
+}
+
+model WalletTransaction {
+  id             String                 @id @default(cuid())
+  walletId       String
+  wallet         Wallet                 @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User                   @relation(fields: [userId], references: [id])
+  type           WalletTransactionType
+  amount         BigInt
+  balanceBefore  BigInt
+  balanceAfter   BigInt
+  referenceType  String?
+  referenceId    String?
+  description    String?
+  createdAt      DateTime               @default(now())
+
+  @@index([walletId])
+  @@index([userId])
+}
+
+// ---------- Categories / Products ----------
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  image       String?
+  sortOrder   Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  products Product[]
+}
+
+enum DeliveryType {
+  INSTANT
+  MANUAL
+  HOLD
+}
+
+model Product {
+  id                String   @id @default(cuid())
+  code              String   @unique
+  slug              String   @unique
+  name              String
+  shortDescription  String?
+  description       String?
+
+  price             BigInt
+  compareAtPrice    BigInt?
+
+  stock             Int      @default(0)
+  soldCount          Int      @default(0)
+
+  categoryId        String
+  category          Category @relation(fields: [categoryId], references: [id])
+
+  deliveryType      DeliveryType @default(INSTANT)
+  holdDays          Int?
+
+  featured          Boolean  @default(false)
+  active            Boolean  @default(true)
+
+  seoTitle          String?
+  seoDescription    String?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  images       ProductImage[]
+  fields       ProductField[]
+  cartItems    CartItem[]
+  orderItems   OrderItem[]
+
+  @@index([categoryId])
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
+
+enum ProductFieldType {
+  TEXT
+  NUMBER
+  SELECT
+  TEXTAREA
+}
+
+model ProductField {
+  id          String           @id @default(cuid())
+  productId   String
+  product     Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  label       String
+  key         String
+  type        ProductFieldType
+  required    Boolean          @default(false)
+  placeholder String?
+  options     String?
+  sortOrder   Int              @default(0)
+
+  @@index([productId])
+}
+
+// ---------- Cart ----------
+
+model Cart {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items CartItem[]
+
+  @@index([userId])
+}
+
+model CartItem {
+  id          String   @id @default(cuid())
+  cartId      String
+  cart        Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  quantity    Int
+  customFields Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([cartId])
+  @@index([productId])
+}
+
+// ---------- Coupons ----------
+
+enum CouponType {
+  PERCENT
+  FIXED_AMOUNT
+}
+
+model Coupon {
+  id               String     @id @default(cuid())
+  code             String     @unique
+  type             CouponType
+  value            BigInt
+  minimumOrder     BigInt?
+  maximumDiscount  BigInt?
+  usageLimit       Int?
+  usagePerUser     Int?
+  startAt          DateTime?
+  endAt            DateTime?
+  active           Boolean    @default(true)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  usages CouponUsage[]
+  orders Order[]
+}
+
+model CouponUsage {
+  id        String   @id @default(cuid())
+  couponId  String
+  coupon    Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  orderId   String   @unique
+  createdAt DateTime @default(now())
+
+  @@index([couponId])
+  @@index([userId])
+}
+
+// ---------- Orders ----------
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  DELIVERING
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  orderCode   String      @unique
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+
+  subtotal    BigInt
+  discount    BigInt      @default(0)
+  total       BigInt
+
+  couponCode  String?
+  couponId    String?
+  coupon      Coupon?     @relation(fields: [couponId], references: [id])
+
+  status      OrderStatus @default(PENDING)
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  completedAt DateTime?
+
+  items         OrderItem[]
+  statusHistory OrderStatusHistory[]
+
+  @@index([userId])
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+
+  productCode String
+  productName String
+
+  unitPrice   BigInt
+  quantity    Int
+  subtotal    BigInt
+
+  fields OrderItemField[]
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model OrderItemField {
+  id          String    @id @default(cuid())
+  orderItemId String
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  fieldKey    String
+  fieldLabel  String
+  value       String
+
+  @@index([orderItemId])
+}
+
+model OrderStatusHistory {
+  id         String      @id @default(cuid())
+  orderId    String
+  order      Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fromStatus OrderStatus?
+  toStatus   OrderStatus
+  changedBy  String?
+  note       String?
+  createdAt  DateTime    @default(now())
+
+  @@index([orderId])
+}
+
+// ---------- Topups / Payments ----------
+
+enum TopupProvider {
+  BANK
+  MOMO
+  THESIEURE
+  CARD
+}
+
+enum TopupStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
+  WRONG_VALUE
+}
+
+model Topup {
+  id                     String        @id @default(cuid())
+  topupCode              String        @unique
+  userId                 String
+  user                   User          @relation(fields: [userId], references: [id])
+
+  provider               TopupProvider
+  amount                 BigInt
+  fee                    BigInt        @default(0)
+  netAmount              BigInt
+
+  status                 TopupStatus   @default(PENDING)
+  externalTransactionId  String?
+
+  meta                   Json?
+
+  createdAt              DateTime      @default(now())
+  completedAt            DateTime?
+
+  @@index([userId])
+}
+
+model PaymentEvent {
+  id              String   @id @default(cuid())
+  provider        String
+  externalEventId String
+  payload         Json
+  processedAt     DateTime?
+  createdAt       DateTime @default(now())
+
+  @@unique([provider, externalEventId])
+}
+
+// ---------- CMS ----------
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model BlogPost {
+  id              String     @id @default(cuid())
+  title           String
+  slug            String     @unique
+  excerpt         String?
+  content         String
+  thumbnail       String?
+
+  status          BlogStatus @default(DRAFT)
+
+  seoTitle        String?
+  seoDescription  String?
+
+  authorId        String
+  author          User       @relation(fields: [authorId], references: [id])
+
+  publishedAt     DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+model Faq {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  ctaLabel  String?
+  ctaUrl    String?
+  startAt   DateTime?
+  endAt     DateTime?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SiteSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+// ---------- Audit ----------
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  actorUserId  String?
+  actor        User?    @relation(fields: [actorUserId], references: [id])
+  action       String
+
+  entityType   String?
+  entityId     String?
+
+  beforeData   Json?
+  afterData    Json?
+
+  ip           String?
+  userAgent    String?
+
+  createdAt    DateTime @default(now())
+
+  @@index([actorUserId])
+  @@index([entityType, entityId])
+}

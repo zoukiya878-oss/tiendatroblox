@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { listProducts, type ProductSort } from "@/modules/products/list-products";
 import { ProductCard } from "@/components/products/product-card";
+import { cn } from "@/lib/utils";
 import {
   Pagination,
   PaginationContent,
@@ -27,14 +29,34 @@ export default async function ProductListPage({
   const get = (k: string) => (Array.isArray(sp[k]) ? sp[k]?.[0] : sp[k]) as string | undefined;
 
   const categorySlug = get("category");
+  const subSlug = get("sub");
   const sort = (get("sort") as ProductSort) || "newest";
   const page = get("page") ? Number(get("page")) : 1;
 
   const categories = await prisma.category.findMany({ where: { active: true } });
   const category = categorySlug ? categories.find((c) => c.slug === categorySlug) : undefined;
+  const children = category ? categories.filter((c) => c.parentId === category.id) : [];
+  const activeSub = subSlug ? children.find((c) => c.slug === subSlug) : undefined;
+
+  // "Dịch vụ" cha có danh mục con: bấm "Tất cả" gộp sản phẩm mọi con, bấm 1
+  // thẻ con thì lọc đúng con đó. Danh mục không có con (hoặc không chọn gì)
+  // thì lọc thẳng theo category.id như cũ.
+  const effectiveCategoryId = activeSub ? activeSub.id : children.length === 0 ? category?.id : undefined;
+  const effectiveCategoryIds = !activeSub && children.length > 0 ? children.map((c) => c.id) : undefined;
+
+  const productCounts =
+    children.length > 0
+      ? Object.fromEntries(
+          await Promise.all(
+            children.map(async (c) => [c.id, await prisma.product.count({ where: { categoryId: c.id, active: true } })])
+          )
+        )
+      : {};
+  const totalInService = children.length > 0 ? Object.values(productCounts).reduce((a: number, b) => a + (b as number), 0) : 0;
 
   const { items, total, totalPages } = await listProducts({
-    categoryId: category?.id,
+    categoryId: effectiveCategoryId,
+    categoryIds: effectiveCategoryIds,
     sort,
     page,
     pageSize: 12,
@@ -42,7 +64,7 @@ export default async function ProductListPage({
 
   function buildQuery(overrides: Record<string, string | undefined>) {
     const params = new URLSearchParams();
-    const merged = { category: categorySlug, sort, page: String(page), ...overrides };
+    const merged = { category: categorySlug, sub: subSlug, sort, page: String(page), ...overrides };
     for (const [k, v] of Object.entries(merged)) {
       if (v) params.set(k, v);
     }
@@ -51,14 +73,48 @@ export default async function ProductListPage({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
-      <h1 className="mb-6 font-heading text-2xl font-bold">
-        {category ? category.name : "Tất cả vật phẩm"}
+      <h1 className="mb-2 font-heading text-2xl font-bold">
+        {activeSub ? activeSub.name : category ? category.name : "Tất cả vật phẩm"}
       </h1>
+      {category?.description && !activeSub && (
+        <p className="mb-6 max-w-2xl text-sm text-muted-foreground">{category.description}</p>
+      )}
+
+      {children.length > 0 && (
+        <div className="mb-6 flex flex-wrap gap-3">
+          <Link
+            href={`/vat-pham?category=${category!.slug}`}
+            className={cn(
+              "flex min-w-32 flex-col gap-1 rounded-xl px-4 py-3 ring-1 transition-colors",
+              !activeSub ? "bg-primary text-primary-foreground ring-primary" : "bg-card text-foreground ring-foreground/10 hover:ring-primary/40"
+            )}
+          >
+            <span className="font-semibold">Tất cả</span>
+            <span className="text-xs opacity-80">{totalInService} vật phẩm đang bán</span>
+          </Link>
+          {children.map((c) => (
+            <Link
+              key={c.id}
+              href={`/vat-pham?category=${category!.slug}&sub=${c.slug}`}
+              className={cn(
+                "flex min-w-32 flex-col gap-1 rounded-xl px-4 py-3 ring-1 transition-colors",
+                activeSub?.id === c.id
+                  ? "bg-primary text-primary-foreground ring-primary"
+                  : "bg-card text-foreground ring-foreground/10 hover:ring-primary/40"
+              )}
+            >
+              <span className="font-semibold">{c.name}</span>
+              <span className="text-xs opacity-80">{productCounts[c.id] ?? 0} vật phẩm đang bán</span>
+            </Link>
+          ))}
+        </div>
+      )}
 
       <div className="mb-4 flex items-center justify-between gap-3">
         <span className="text-sm text-muted-foreground">{total} sản phẩm</span>
         <form method="GET" action="/vat-pham" className="flex items-center gap-2">
           {categorySlug && <input type="hidden" name="category" value={categorySlug} />}
+          {subSlug && <input type="hidden" name="sub" value={subSlug} />}
           <label className="text-xs text-muted-foreground">Sắp xếp:</label>
           <select
             name="sort"

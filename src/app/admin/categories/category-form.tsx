@@ -28,7 +28,15 @@ function SubmitButton({ label }: { label: string }) {
   );
 }
 
-export function CategoryForm({ action, category }: { action: (formData: FormData) => void; category?: Category }) {
+export function CategoryForm({
+  action,
+  category,
+  parentOptions = [],
+}: {
+  action: (formData: FormData) => void;
+  category?: Category;
+  parentOptions?: { id: string; name: string }[];
+}) {
   const [name, setName] = useState(category?.name ?? "");
   const [slug, setSlug] = useState(category?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(!!category);
@@ -67,6 +75,24 @@ export function CategoryForm({ action, category }: { action: (formData: FormData
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="sortOrder">Thứ tự hiển thị</Label>
         <Input id="sortOrder" name="sortOrder" type="number" defaultValue={category?.sortOrder ?? 0} />
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="parentId">Danh mục cha (để trống = dịch vụ cấp 1)</Label>
+        <select
+          id="parentId"
+          name="parentId"
+          defaultValue={category?.parentId ?? ""}
+          className="h-9 rounded-lg border border-input bg-transparent px-2 text-sm outline-none focus-visible:border-ring"
+        >
+          <option value="">— Không có (danh mục cấp 1) —</option>
+          {parentOptions
+            .filter((p) => p.id !== category?.id)
+            .map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+        </select>
       </div>
       <div className="flex flex-col gap-1.5 md:col-span-2">
         <Label htmlFor="description">Mô tả</Label>

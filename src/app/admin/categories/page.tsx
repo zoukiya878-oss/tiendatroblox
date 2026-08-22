@@ -10,8 +10,9 @@ import { upsertCategoryAction, toggleCategoryActiveAction } from "./actions";
 export default async function AdminCategoriesPage() {
   const categories = await prisma.category.findMany({
     orderBy: { sortOrder: "asc" },
-    include: { _count: { select: { products: true } } },
+    include: { _count: { select: { products: true } }, parent: { select: { name: true } } },
   });
+  const parentOptions = categories.filter((c) => !c.parentId).map((c) => ({ id: c.id, name: c.name }));
 
   return (
     <div className="flex flex-col gap-6">
@@ -22,7 +23,7 @@ export default async function AdminCategoriesPage() {
           <CardTitle>Thêm danh mục mới</CardTitle>
         </CardHeader>
         <CardContent>
-          <CategoryForm action={upsertCategoryAction.bind(null, null)} />
+          <CategoryForm action={upsertCategoryAction.bind(null, null)} parentOptions={parentOptions} />
         </CardContent>
       </Card>
 
@@ -41,7 +42,7 @@ export default async function AdminCategoriesPage() {
           <TableBody>
             {categories.map((c) => (
               <TableRow key={c.id}>
-                <TableCell>{c.name}</TableCell>
+                <TableCell>{c.parent ? `— ${c.name}` : c.name}</TableCell>
                 <TableCell className="text-xs text-muted-foreground">{c.slug}</TableCell>
                 <TableCell>{c.sortOrder}</TableCell>
                 <TableCell>{c._count.products}</TableCell>

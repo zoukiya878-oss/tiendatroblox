@@ -33,7 +33,7 @@ export async function Header({ settings }: { settings: SiteSettings }) {
 
   const [categories, cartCount] = await Promise.all([
     prisma.category.findMany({
-      where: { active: true },
+      where: { active: true, parentId: null },
       orderBy: { sortOrder: "asc" },
       select: { id: true, name: true, slug: true },
     }),

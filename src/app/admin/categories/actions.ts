@@ -32,6 +32,7 @@ export async function upsertCategoryAction(id: string | null, formData: FormData
   const image = String(formData.get("image") ?? "").trim() || null;
   const sortOrder = Number(formData.get("sortOrder") ?? 0);
   const active = formData.get("active") === "on";
+  const parentId = String(formData.get("parentId") ?? "").trim() || null;
   if (!name) throw new Error("Tên danh mục là bắt buộc");
   const slug = slugInput || slugify(name);
 
@@ -39,7 +40,7 @@ export async function upsertCategoryAction(id: string | null, formData: FormData
     const before = await prisma.category.findUniqueOrThrow({ where: { id } });
     const category = await prisma.category.update({
       where: { id },
-      data: { name, slug, description, image, sortOrder, active },
+      data: { name, slug, description, image, sortOrder, active, parentId },
     });
     await writeAuditLog({
       actorUserId,
@@ -51,7 +52,7 @@ export async function upsertCategoryAction(id: string | null, formData: FormData
     });
   } else {
     const category = await prisma.category.create({
-      data: { name, slug, description, image, sortOrder, active },
+      data: { name, slug, description, image, sortOrder, active, parentId },
     });
     await writeAuditLog({
       actorUserId,

@@ -18,7 +18,7 @@ const MEDALS = ["🥇", "🥈", "🥉"];
 export default async function HomePage() {
   const [settings, categories, topups, purchases, leaderboard] = await Promise.all([
     getSiteSettings(),
-    prisma.category.findMany({ where: { active: true }, orderBy: { sortOrder: "asc" } }),
+    prisma.category.findMany({ where: { active: true, parentId: null }, orderBy: { sortOrder: "asc" } }),
     getRecentTopups(8),
     getRecentPurchases(8),
     getMonthlyLeaderboard(10),

@@ -10,6 +10,7 @@ export type ProductSort =
 
 export interface ListProductsParams {
   categoryId?: string;
+  categoryIds?: string[];
   q?: string;
   minPrice?: number;
   maxPrice?: number;
@@ -31,6 +32,7 @@ const SORT_MAP: Record<ProductSort, Prisma.ProductOrderByWithRelationInput> = {
 export async function listProducts(params: ListProductsParams = {}) {
   const {
     categoryId,
+    categoryIds,
     q,
     minPrice,
     maxPrice,
@@ -44,6 +46,7 @@ export async function listProducts(params: ListProductsParams = {}) {
   const where: Prisma.ProductWhereInput = {
     active: true,
     ...(categoryId && { categoryId }),
+    ...(categoryIds && categoryIds.length > 0 && { categoryId: { in: categoryIds } }),
     ...(deliveryType && { deliveryType }),
     ...(inStockOnly && { stock: { gt: 0 } }),
     ...(q && { name: { contains: q, mode: "insensitive" } }),

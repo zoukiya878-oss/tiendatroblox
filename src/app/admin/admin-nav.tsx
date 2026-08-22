@@ -63,11 +63,15 @@ export function AdminSidebar() {
 export function AdminMobileNav() {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border-b border-border bg-card p-3 md:hidden">
+    <div className="sticky top-0 z-40 border-b border-border bg-card p-3 md:hidden">
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger render={<Button variant="outline" size="icon" />}>
-          <MenuIcon />
-        </SheetTrigger>
+        <SheetTrigger
+          render={
+            <Button variant="outline" size="icon" aria-label="Menu">
+              <MenuIcon />
+            </Button>
+          }
+        />
         <SheetContent side="left">
           <SheetHeader>
             <SheetTitle>Tiendatroblox Admin</SheetTitle>

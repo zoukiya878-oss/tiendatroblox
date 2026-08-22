@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/footer";
 import { PromoBar } from "@/components/layout/promo-bar";
 import { AnnouncementPopup } from "@/components/layout/announcement-popup";
 import { FloatingSupport } from "@/components/layout/floating-support";
+import { ShopChromeGate } from "@/components/layout/shop-chrome-gate";
 import { getSiteSettings } from "@/modules/cms/site-settings";
 import { getActiveAnnouncement } from "@/modules/cms/announcement";
 import { Toaster } from "@/components/ui/sonner";
@@ -51,12 +52,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <PromoBar />
-        <Header settings={settings} />
+        <ShopChromeGate>
+          <PromoBar />
+          <Header settings={settings} />
+        </ShopChromeGate>
         <main className="flex-1">{children}</main>
-        <Footer settings={settings} />
-        <FloatingSupport settings={settings} />
-        {announcement && <AnnouncementPopup announcement={announcement} />}
+        <ShopChromeGate>
+          <Footer settings={settings} />
+          <FloatingSupport settings={settings} />
+          {announcement && <AnnouncementPopup announcement={announcement} />}
+        </ShopChromeGate>
         <Toaster />
       </body>
     </html>

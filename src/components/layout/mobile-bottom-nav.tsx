@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   Menu as MenuIcon,
-  Wallet,
   ListChecks,
   X,
   Home,
@@ -67,11 +66,11 @@ export function MobileBottomNav({
           </button>
 
           <Link
-            href="/nap-tien"
+            href="/"
             className="mx-2 flex flex-[1.3] flex-col items-center gap-0.5 rounded-2xl bg-gradient-to-r from-primary to-brand-pink py-2.5 text-white shadow-lg shadow-primary/30"
           >
-            <Wallet className="size-5" />
-            <span className="text-xs font-bold">Nạp tiền</span>
+            <Home className="size-5" />
+            <span className="text-xs font-bold">Trang chủ</span>
           </Link>
 
           <Link

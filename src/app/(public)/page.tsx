@@ -9,6 +9,7 @@ import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ScrollToButton } from "@/components/scroll-to-button";
 import { ProviderIcon } from "@/components/payment/provider-icon";
 import { TrustStats } from "@/components/layout/trust-stats";
 
@@ -53,14 +54,13 @@ export default async function HomePage() {
             </p>
 
             <div className="flex flex-wrap items-center gap-3 pt-2">
-              <Button
+              <ScrollToButton
+                targetId="dich-vu-noi-bat"
                 size="lg"
                 className="bg-gradient-to-r from-primary to-brand-pink text-white hover:opacity-90"
-                nativeButton={false}
-                render={<Link href="#dich-vu-noi-bat" />}
               >
                 Mua ngay <ArrowRight />
-              </Button>
+              </ScrollToButton>
               <Button size="lg" variant="outline" nativeButton={false} render={<Link href="/nap-tien" />}>
                 <Wallet /> Nạp tiền
               </Button>

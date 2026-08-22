@@ -50,10 +50,11 @@ export async function Header({ settings }: { settings: SiteSettings }) {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4">
           <Link href="/" className="flex items-center gap-2 font-heading text-xl font-black">
             <Image
-              src="/logo-banner.png"
+              src="/logo-banner.gif"
               alt={settings.siteName}
               width={500}
               height={229}
+              unoptimized
               priority
               className="h-9 w-auto rounded-md sm:h-10"
             />

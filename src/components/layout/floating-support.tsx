@@ -5,7 +5,7 @@ export function FloatingSupport({ settings }: { settings: SiteSettings }) {
   if (!settings.zaloUrl && !settings.facebookUrl) return null;
 
   return (
-    <div className="fixed bottom-5 right-5 z-30 flex flex-col gap-3">
+    <div className="fixed right-5 bottom-24 z-30 flex flex-col gap-3 md:bottom-5">
       {settings.zaloUrl && (
         <a
           href={settings.zaloUrl}

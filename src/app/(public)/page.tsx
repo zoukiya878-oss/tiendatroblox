@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/products/product-card";
 import { ProviderIcon } from "@/components/payment/provider-icon";
+import { TrustStats } from "@/components/layout/trust-stats";
 
 const MEDALS = ["🥇", "🥈", "🥉"];
 
@@ -70,6 +71,8 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      <TrustStats />
 
       {/* Categories */}
       {categories.length > 0 && (

@@ -15,8 +15,8 @@ export interface SiteSettings {
 }
 
 const DEFAULTS: SiteSettings = {
-  siteName: "Shop Anh Robo",
-  heroTitle: "Shop Anh Robo - Vật phẩm game giá tốt, giao hàng tức thì",
+  siteName: "Tiendatroblox",
+  heroTitle: "Tiendatroblox - Vật phẩm game giá tốt, giao hàng tức thì",
   heroDescription: "Nạp thẻ, mua vật phẩm game uy tín, giao dịch nhanh chóng 24/7.",
   facebookUrl: "",
   zaloUrl: "",

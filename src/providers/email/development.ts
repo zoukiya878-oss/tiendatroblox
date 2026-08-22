@@ -10,7 +10,7 @@ const transport = nodemailer.createTransport({
 // ponytail: dev-only Mailpit SMTP, swap for Resend when going to production.
 export const DevelopmentEmailProvider: EmailProvider = {
   async send(to, subject, html) {
-    await transport.sendMail({ from: "no-reply@shopanhrobo.local", to, subject, html });
+    await transport.sendMail({ from: "no-reply@tiendatroblox.local", to, subject, html });
   },
 };
 

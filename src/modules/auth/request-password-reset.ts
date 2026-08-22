@@ -26,7 +26,7 @@ export async function requestPasswordReset(email: string) {
   const link = `${process.env.APP_URL}/reset-mat-khau?token=${token}`;
   await emailProvider.send(
     user.email,
-    "Đặt lại mật khẩu - Shop Anh Robo",
+    "Đặt lại mật khẩu - Tiendatroblox",
     `<p>Xin chào ${user.username},</p>
      <p>Nhấn vào liên kết sau để đặt lại mật khẩu (liên kết hết hạn sau 1 giờ):</p>
      <p><a href="${link}">${link}</a></p>

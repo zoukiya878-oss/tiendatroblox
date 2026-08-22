@@ -54,7 +54,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 export function AdminSidebar() {
   return (
     <aside className="hidden w-56 shrink-0 border-r border-border bg-card p-4 md:block">
-      <div className="mb-4 font-heading text-lg font-semibold">Shop Anh Robo Admin</div>
+      <div className="mb-4 font-heading text-lg font-semibold">Tiendatroblox Admin</div>
       <NavLinks />
     </aside>
   );
@@ -70,7 +70,7 @@ export function AdminMobileNav() {
         </SheetTrigger>
         <SheetContent side="left">
           <SheetHeader>
-            <SheetTitle>Shop Anh Robo Admin</SheetTitle>
+            <SheetTitle>Tiendatroblox Admin</SheetTitle>
           </SheetHeader>
           <div className="px-4">
             <NavLinks onNavigate={() => setOpen(false)} />

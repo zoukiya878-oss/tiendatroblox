@@ -4,15 +4,15 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  const adminPassword = await bcrypt.hash("Admin@123456", 10);
+  const adminPassword = await bcrypt.hash("admin@123", 10);
   const customerPassword = await bcrypt.hash("Customer@123", 10);
 
   const admin = await prisma.user.upsert({
-    where: { email: "admin@shopanhrobo.local" },
+    where: { email: "tiendatroblox@tiendatroblox.local" },
     update: {},
     create: {
-      username: "admin",
-      email: "admin@shopanhrobo.local",
+      username: "tiendatroblox",
+      email: "tiendatroblox@tiendatroblox.local",
       passwordHash: adminPassword,
       role: "ADMIN",
       wallet: { create: { balance: 0n } },
@@ -20,11 +20,11 @@ async function main() {
   });
 
   const customer = await prisma.user.upsert({
-    where: { email: "customer@shopanhrobo.local" },
+    where: { email: "customer@tiendatroblox.local" },
     update: {},
     create: {
       username: "khachhang",
-      email: "customer@shopanhrobo.local",
+      email: "customer@tiendatroblox.local",
       passwordHash: customerPassword,
       role: "CUSTOMER",
       wallet: { create: { balance: 500000n } },
@@ -194,7 +194,7 @@ async function main() {
     update: {},
     create: {
       id: "seed-announcement",
-      title: "Chào mừng đến Shop Anh Robo",
+      title: "Chào mừng đến Tiendatroblox",
       content: "Giảm giá lên tới 50% cho đơn hàng đầu tiên. Nạp tiền và mua ngay!",
       ctaLabel: "Mua ngay",
       ctaUrl: "/vat-pham",
@@ -208,17 +208,17 @@ async function main() {
     create: {
       key: "site",
       value: JSON.stringify({
-        siteName: "Shop Anh Robo",
+        siteName: "Tiendatroblox",
         heroTitle: "Giảm giá cực sốc lên tới 50%",
         heroDescription: "Vật phẩm game giao dịch tự động, uy tín, nhanh chóng.",
         facebookUrl: "https://facebook.com",
         zaloUrl: "https://zalo.me",
         telegramUrl: "",
-        supportEmail: "support@shopanhrobo.local",
+        supportEmail: "support@tiendatroblox.local",
         supportHours: "8:00 - 23:00 hằng ngày",
         bankName: "MB Bank",
         bankAccountNumber: "0888888888",
-        bankAccountName: "SHOP ANH ROBO",
+        bankAccountName: "TIENDATROBLOX",
       }),
     },
   });

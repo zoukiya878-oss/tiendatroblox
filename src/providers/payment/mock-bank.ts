@@ -7,7 +7,7 @@ export const MockBankProvider: PaymentProvider = {
       instructions: {
         bankName: "MB Bank (Mock)",
         accountNumber: "0888888888",
-        accountName: "SHOP ANH ROBO",
+        accountName: "TIENDATROBLOX",
         amount: amount.toString(),
         transferContent: topupCode,
       },

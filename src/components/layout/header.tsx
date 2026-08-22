@@ -106,11 +106,11 @@ export async function Header({ settings }: { settings: SiteSettings }) {
                     <Button
                       variant="secondary"
                       size="sm"
-                      className="hidden rounded-full border border-emerald-500/30 bg-emerald-500/15 text-emerald-500 hover:bg-emerald-500/25 sm:inline-flex"
+                      className="inline-flex rounded-full border border-emerald-500/30 bg-emerald-500/15 text-emerald-500 hover:bg-emerald-500/25"
                     >
                       <Coins className="size-3.5" />
                       {formatVnd(wallet?.balance ?? 0n)}
-                      <ChevronDown className="size-3.5" />
+                      <ChevronDown className="hidden size-3.5 sm:inline" />
                     </Button>
                   }
                 />

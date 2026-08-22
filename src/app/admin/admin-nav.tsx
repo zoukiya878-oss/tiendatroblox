@@ -4,23 +4,40 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { MenuIcon, XIcon } from "lucide-react";
+import {
+  MenuIcon,
+  XIcon,
+  LayoutDashboard,
+  Package,
+  FolderTree,
+  ShoppingCart,
+  Users,
+  Wallet,
+  CreditCard,
+  Ticket,
+  Newspaper,
+  HelpCircle,
+  Megaphone,
+  Settings,
+  Landmark,
+  ScrollText,
+} from "lucide-react";
 
 const NAV_ITEMS = [
-  { href: "/admin", label: "Dashboard" },
-  { href: "/admin/products", label: "Sản phẩm" },
-  { href: "/admin/categories", label: "Danh mục" },
-  { href: "/admin/orders", label: "Đơn hàng" },
-  { href: "/admin/users", label: "Người dùng" },
-  { href: "/admin/wallets", label: "Ví" },
-  { href: "/admin/topups", label: "Nạp tiền" },
-  { href: "/admin/coupons", label: "Mã giảm giá" },
-  { href: "/admin/blog", label: "Blog" },
-  { href: "/admin/faqs", label: "FAQ" },
-  { href: "/admin/announcements", label: "Thông báo" },
-  { href: "/admin/settings", label: "Cài đặt" },
-  { href: "/admin/payment-providers", label: "Payment Providers" },
-  { href: "/admin/audit-logs", label: "Audit Logs" },
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/products", label: "Sản phẩm", icon: Package },
+  { href: "/admin/categories", label: "Danh mục", icon: FolderTree },
+  { href: "/admin/orders", label: "Đơn hàng", icon: ShoppingCart },
+  { href: "/admin/users", label: "Người dùng", icon: Users },
+  { href: "/admin/wallets", label: "Ví", icon: Wallet },
+  { href: "/admin/topups", label: "Nạp tiền", icon: CreditCard },
+  { href: "/admin/coupons", label: "Mã giảm giá", icon: Ticket },
+  { href: "/admin/blog", label: "Blog", icon: Newspaper },
+  { href: "/admin/faqs", label: "FAQ", icon: HelpCircle },
+  { href: "/admin/announcements", label: "Thông báo", icon: Megaphone },
+  { href: "/admin/settings", label: "Cài đặt", icon: Settings },
+  { href: "/admin/payment-providers", label: "Payment Providers", icon: Landmark },
+  { href: "/admin/audit-logs", label: "Audit Logs", icon: ScrollText },
 ];
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
@@ -35,12 +52,13 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
             href={item.href}
             onClick={onNavigate}
             className={cn(
-              "rounded-lg px-3 py-2 text-sm transition-colors",
+              "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors",
               active
                 ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
             )}
           >
+            <item.icon className="size-4 shrink-0" />
             {item.label}
           </Link>
         );

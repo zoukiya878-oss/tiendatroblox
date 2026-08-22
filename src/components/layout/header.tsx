@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Menu, ShoppingCart, Wallet, Coins, ChevronDown, User, Package, Receipt } from "lucide-react";
+import { ShoppingCart, Wallet, Coins, ChevronDown, User, Package, Receipt } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatVnd } from "@/lib/money";
@@ -9,13 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -24,7 +17,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { HeaderSignOutItem } from "@/components/layout/header-sign-out-item";
-import { HeaderSignOutButton } from "@/components/layout/header-sign-out-button";
 
 const NAV_LINKS = [
   { href: "/", label: "Trang chủ" },
@@ -157,67 +149,6 @@ export async function Header({ settings }: { settings: SiteSettings }) {
               </div>
             )}
 
-            <Sheet>
-              <SheetTrigger
-                render={
-                  <Button variant="secondary" size="icon" className="rounded-full lg:hidden" aria-label="Menu">
-                    <Menu />
-                  </Button>
-                }
-              />
-              <SheetContent side="left">
-                <SheetHeader>
-                  <SheetTitle className="flex items-center justify-between">
-                    {settings.siteName}
-                    <ThemeToggle />
-                  </SheetTitle>
-                </SheetHeader>
-                <nav className="flex flex-col gap-1 px-4">
-                  {NAV_LINKS.map((link) => (
-                    <Button key={link.href} variant="ghost" className="justify-start" nativeButton={false} render={<Link href={link.href} />}>
-                      {link.label}
-                    </Button>
-                  ))}
-                  {categories.map((c) => (
-                    <Button key={c.id} variant="ghost" className="justify-start" nativeButton={false} render={<Link href={`/vat-pham?category=${c.slug}`} />}>
-                      {c.name}
-                    </Button>
-                  ))}
-                  <DropdownMenuSeparator />
-                  {session?.user ? (
-                    <>
-                      <p className="px-4 py-1 text-sm font-semibold">{session.user.name}</p>
-                      <p className="px-4 pb-2 text-xs text-muted-foreground">
-                        Số dư ví: {formatVnd(wallet?.balance ?? 0n)}
-                      </p>
-                      <Button variant="ghost" className="justify-start" nativeButton={false} render={<Link href="/tai-khoan/thong-tin" />}>
-                        <User /> Tài khoản
-                      </Button>
-                      <Button variant="ghost" className="justify-start" nativeButton={false} render={<Link href="/tai-khoan/don-hang" />}>
-                        <Package /> Đơn hàng
-                      </Button>
-                      <Button variant="ghost" className="justify-start" nativeButton={false} render={<Link href="/tai-khoan/lich-su-giao-dich" />}>
-                        <Receipt /> Giao dịch
-                      </Button>
-                      <Button variant="ghost" className="justify-start" nativeButton={false} render={<Link href="/nap-tien" />}>
-                        <Wallet /> Nạp tiền
-                      </Button>
-                      <DropdownMenuSeparator />
-                      <HeaderSignOutButton />
-                    </>
-                  ) : (
-                    <>
-                      <Button variant="ghost" className="justify-start" nativeButton={false} render={<Link href="/dang-nhap" />}>
-                        Đăng nhập
-                      </Button>
-                      <Button variant="secondary" className="justify-start" nativeButton={false} render={<Link href="/dang-ky" />}>
-                        Đăng ký
-                      </Button>
-                    </>
-                  )}
-                </nav>
-              </SheetContent>
-            </Sheet>
           </div>
         </div>
       </div>

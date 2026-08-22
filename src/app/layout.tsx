@@ -11,6 +11,8 @@ import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { getSiteSettings } from "@/modules/cms/site-settings";
 import { getActiveAnnouncement } from "@/modules/cms/announcement";
 import { Toaster } from "@/components/ui/sonner";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 // ponytail: gaming-styled, bolder body font with Vietnamese diacritics support
 // (Orbitron-style display fonts drop Vietnamese glyphs, so we go heavy-weight
@@ -40,10 +42,14 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const [settings, announcement] = await Promise.all([
+  const [settings, announcement, session] = await Promise.all([
     getSiteSettings(),
     getActiveAnnouncement(),
+    auth(),
   ]);
+  const wallet = session?.user?.id
+    ? await prisma.wallet.findUnique({ where: { userId: session.user.id }, select: { balance: true } })
+    : null;
 
   return (
     <html
@@ -70,7 +76,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Footer settings={settings} />
           <FloatingSupport settings={settings} />
           {announcement && <AnnouncementPopup announcement={announcement} />}
-          <MobileBottomNav settings={settings} />
+          <MobileBottomNav settings={settings} user={session?.user ?? null} walletBalance={wallet?.balance ?? 0n} />
         </ShopChromeGate>
         <Toaster />
       </body>

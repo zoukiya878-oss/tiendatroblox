@@ -3,27 +3,24 @@ import Image from "next/image";
 import { ArrowRight, TrendingUp, Wallet, ShoppingBag, Trophy } from "lucide-react";
 import { getSiteSettings } from "@/modules/cms/site-settings";
 import { getRecentTopups, getRecentPurchases, getMonthlyLeaderboard } from "@/modules/cms/homepage-data";
-import { getFeaturedProducts } from "@/modules/products/list-products";
 import { prisma } from "@/lib/prisma";
 import { formatVnd } from "@/lib/money";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ProductCard } from "@/components/products/product-card";
 import { ProviderIcon } from "@/components/payment/provider-icon";
 import { TrustStats } from "@/components/layout/trust-stats";
 
 const MEDALS = ["🥇", "🥈", "🥉"];
 
 export default async function HomePage() {
-  const [settings, categories, topups, purchases, leaderboard, featured] = await Promise.all([
+  const [settings, categories, topups, purchases, leaderboard] = await Promise.all([
     getSiteSettings(),
     prisma.category.findMany({ where: { active: true }, orderBy: { sortOrder: "asc" } }),
     getRecentTopups(8),
     getRecentPurchases(8),
     getMonthlyLeaderboard(10),
-    getFeaturedProducts(8),
   ]);
 
   return (
@@ -99,8 +96,8 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Featured products */}
-      {featured.length > 0 && (
+      {/* Dịch vụ nổi bật — bìa danh mục, bấm vào ra danh sách sản phẩm của danh mục đó */}
+      {categories.length > 0 && (
         <section className="mx-auto w-full max-w-7xl px-4">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-heading text-xl font-bold">🔥 Dịch vụ nổi bật</h2>
@@ -108,17 +105,32 @@ export default async function HomePage() {
               Xem tất cả
             </Link>
           </div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-            {featured.map((p) => (
-              <ProductCard
-                key={p.id}
-                slug={p.slug}
-                name={p.name}
-                price={p.price}
-                compareAtPrice={p.compareAtPrice}
-                stock={p.stock}
-                imageUrl={p.images[0]?.url}
-              />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {categories.map((c) => (
+              <Link
+                key={c.id}
+                href={`/vat-pham?category=${c.slug}`}
+                className="group relative flex aspect-4/3 flex-col justify-end overflow-hidden rounded-2xl bg-card ring-1 ring-foreground/10 transition-transform hover:-translate-y-1"
+              >
+                {c.image ? (
+                  <Image
+                    src={c.image}
+                    alt={c.name}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-card to-brand-pink/20" />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+                <div className="relative z-10 flex flex-col gap-1 p-4">
+                  <h3 className="font-heading text-lg font-bold text-white">{c.name}</h3>
+                  {c.description && (
+                    <p className="line-clamp-2 text-xs text-white/80">{c.description}</p>
+                  )}
+                  <span className="mt-1 text-xs font-semibold text-accent">Xem tất cả →</span>
+                </div>
+              </Link>
             ))}
           </div>
         </section>

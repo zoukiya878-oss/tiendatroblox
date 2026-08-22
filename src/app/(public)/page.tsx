@@ -38,7 +38,17 @@ export default async function HomePage() {
             className="pointer-events-none absolute -bottom-24 -left-24 size-72 rounded-full bg-brand-pink/20 blur-3xl"
           />
 
-          <div className="relative flex flex-col gap-6">
+          <Image
+            src="/logo-banner.gif"
+            alt=""
+            aria-hidden
+            unoptimized
+            width={500}
+            height={229}
+            className="pointer-events-none absolute top-1/2 right-8 hidden w-72 -translate-y-1/2 rounded-2xl object-contain opacity-90 drop-shadow-2xl lg:block xl:w-96"
+          />
+
+          <div className="relative flex flex-col gap-6 lg:max-w-xl">
             <span className="w-fit rounded-full border border-accent/40 bg-accent/10 px-4 py-1.5 text-xs font-bold tracking-widest text-accent uppercase">
               Shop game giá rẻ
             </span>

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { storageProvider } from "@/providers/storage/local";
+import { storageProvider } from "@/providers/storage";
 import { writeAuditLog, auditJson } from "@/modules/audit/log";
 import type { BlogStatus } from "@prisma/client";
 

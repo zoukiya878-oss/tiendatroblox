@@ -83,11 +83,7 @@ export default async function HomePage() {
                 className="group flex flex-col items-center gap-2 rounded-xl bg-card p-4 text-center ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:ring-primary/50"
               >
                 <div className="relative flex size-14 items-center justify-center overflow-hidden rounded-full bg-muted">
-                  {c.image ? (
-                    <Image src={c.image} alt={c.name} fill className="object-cover" />
-                  ) : (
-                    <ShoppingBag className="size-6 text-primary" />
-                  )}
+                  <Image src={c.image || "/service-placeholder.png"} alt={c.name} fill className="object-cover" />
                 </div>
                 <span className="text-sm font-medium group-hover:text-primary">{c.name}</span>
               </Link>
@@ -112,16 +108,12 @@ export default async function HomePage() {
                 href={`/vat-pham?category=${c.slug}`}
                 className="group relative flex aspect-4/3 flex-col justify-end overflow-hidden rounded-2xl bg-card ring-1 ring-foreground/10 transition-transform hover:-translate-y-1"
               >
-                {c.image ? (
-                  <Image
-                    src={c.image}
-                    alt={c.name}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-card to-brand-pink/20" />
-                )}
+                <Image
+                  src={c.image || "/service-placeholder.png"}
+                  alt={c.name}
+                  fill
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
                 <div className="relative z-10 flex flex-col gap-1 p-4">
                   <h3 className="font-heading text-lg font-bold text-white">{c.name}</h3>

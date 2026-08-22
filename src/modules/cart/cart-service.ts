@@ -38,6 +38,25 @@ async function getCartOwner(): Promise<CartOwner> {
   return { sessionId };
 }
 
+/** Read-only — never creates a cart row, safe to call on every page render (header badge). */
+export async function getCartItemCount(): Promise<number> {
+  const session = await auth();
+  const userId = session?.user?.id as string | undefined;
+
+  const jar = await cookies();
+  const sessionId = jar.get(CART_COOKIE)?.value;
+
+  if (!userId && !sessionId) return 0;
+
+  const where = userId ? { userId } : { sessionId };
+  const cart = await prisma.cart.findFirst({
+    where,
+    select: { items: { select: { quantity: true } } },
+  });
+  if (!cart) return 0;
+  return cart.items.reduce((sum, i) => sum + i.quantity, 0);
+}
+
 export async function getOrCreateCart() {
   const owner = await getCartOwner();
   const where = "userId" in owner ? { userId: owner.userId } : { sessionId: owner.sessionId };

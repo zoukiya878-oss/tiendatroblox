@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Globe, Send, MessageCircle, Mail, Clock } from "lucide-react";
+import { Send, Mail, Clock } from "lucide-react";
 import type { SiteSettings } from "@/modules/cms/site-settings";
+import { FacebookIcon, ZaloIcon } from "@/components/icons/brand-icons";
 
 export function Footer({ settings }: { settings: SiteSettings }) {
   return (
@@ -39,13 +40,13 @@ export function Footer({ settings }: { settings: SiteSettings }) {
           )}
           <div className="mt-1 flex items-center gap-3">
             {settings.facebookUrl && (
-              <a href={settings.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                <Globe className="size-4" />
+              <a href={settings.facebookUrl} target="_blank" rel="noopener noreferrer" className="text-[#1877F2] hover:opacity-80">
+                <FacebookIcon className="size-5" />
               </a>
             )}
             {settings.zaloUrl && (
-              <a href={settings.zaloUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                <MessageCircle className="size-4" />
+              <a href={settings.zaloUrl} target="_blank" rel="noopener noreferrer" className="text-[#0068FF] hover:opacity-80">
+                <ZaloIcon className="size-5" />
               </a>
             )}
             {settings.telegramUrl && (

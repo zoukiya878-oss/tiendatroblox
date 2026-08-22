@@ -38,8 +38,18 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html
       lang="vi"
+      suppressHydrationWarning
       className={`${bodyFont.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        {/* ponytail: inline script (no next-themes dep) — sets the class before
+            paint so switching themes doesn't flash the wrong palette. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("theme");if(t==="light"){document.documentElement.classList.remove("dark")}else{document.documentElement.classList.add("dark")}}catch(e){document.documentElement.classList.add("dark")}})();`,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <PromoBar />
         <Header settings={settings} />

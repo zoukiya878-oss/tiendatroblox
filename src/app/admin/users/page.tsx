@@ -42,7 +42,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
             {users.map((u) => (
               <TableRow key={u.id}>
                 <TableCell>{u.username}</TableCell>
-                <TableCell>{u.email}</TableCell>
+                <TableCell>{u.email ?? "—"}</TableCell>
                 <TableCell>{u.role}</TableCell>
                 <TableCell>
                   <Badge variant={u.locked ? "destructive" : "default"}>{u.locked ? "Đã khoá" : "Hoạt động"}</Badge>

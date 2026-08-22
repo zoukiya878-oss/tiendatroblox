@@ -11,7 +11,7 @@ export const registerSchema = z
       .min(3, "Tên đăng nhập tối thiểu 3 ký tự")
       .max(32, "Tên đăng nhập tối đa 32 ký tự")
       .regex(/^[a-zA-Z0-9_]+$/, "Tên đăng nhập chỉ gồm chữ, số và dấu gạch dưới"),
-    email: z.string().email("Email không hợp lệ"),
+    email: z.union([z.string().email("Email không hợp lệ"), z.literal("")]).optional(),
     password: z.string().min(8, "Mật khẩu tối thiểu 8 ký tự"),
     confirmPassword: z.string().min(8, "Mật khẩu tối thiểu 8 ký tự"),
   })

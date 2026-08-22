@@ -21,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { HeaderSignOutItem } from "@/components/layout/header-sign-out-item";
+import { HeaderSignOutButton } from "@/components/layout/header-sign-out-button";
 
 const NAV_LINKS = [
   { href: "/", label: "Trang chủ" },
@@ -151,12 +152,24 @@ export async function Header({ settings }: { settings: SiteSettings }) {
                 <DropdownMenuSeparator />
                 {session?.user ? (
                   <>
+                    <p className="px-4 py-1 text-sm font-semibold">{session.user.name}</p>
+                    <p className="px-4 pb-2 text-xs text-muted-foreground">
+                      Số dư ví: {formatVnd(wallet?.balance ?? 0n)}
+                    </p>
+                    <Button variant="ghost" className="justify-start" nativeButton={false} render={<Link href="/tai-khoan/thong-tin" />}>
+                      <User /> Tài khoản
+                    </Button>
                     <Button variant="ghost" className="justify-start" nativeButton={false} render={<Link href="/tai-khoan/don-hang" />}>
-                      Đơn hàng
+                      <Package /> Đơn hàng
+                    </Button>
+                    <Button variant="ghost" className="justify-start" nativeButton={false} render={<Link href="/tai-khoan/lich-su-giao-dich" />}>
+                      <Receipt /> Giao dịch
                     </Button>
                     <Button variant="ghost" className="justify-start" nativeButton={false} render={<Link href="/nap-tien" />}>
-                      Nạp tiền
+                      <Wallet /> Nạp tiền
                     </Button>
+                    <DropdownMenuSeparator />
+                    <HeaderSignOutButton />
                   </>
                 ) : (
                   <>

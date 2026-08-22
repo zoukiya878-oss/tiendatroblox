@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RegisterForm } from "./register-form";
+import { OAuthButtons } from "@/components/auth/oauth-buttons";
 
 export default function DangKyPage() {
   return (
@@ -10,6 +11,9 @@ export default function DangKyPage() {
         </CardHeader>
         <CardContent>
           <RegisterForm />
+          <div className="mt-4">
+            <OAuthButtons callbackUrl="/" />
+          </div>
         </CardContent>
       </Card>
     </div>

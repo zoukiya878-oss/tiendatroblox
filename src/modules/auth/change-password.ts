@@ -19,6 +19,9 @@ export async function changePassword(
   const { currentPassword, newPassword } = parsed.data;
 
   const user = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
+  if (!user.passwordHash) {
+    throw new ChangePasswordError("Tài khoản này đăng nhập qua Google/Facebook, chưa có mật khẩu để đổi");
+  }
 
   const valid = await bcrypt.compare(currentPassword, user.passwordHash);
   if (!valid) throw new ChangePasswordError("Mật khẩu hiện tại không đúng");

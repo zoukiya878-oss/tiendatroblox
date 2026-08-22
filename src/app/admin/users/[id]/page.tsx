@@ -34,7 +34,7 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
             <CardTitle>Thông tin</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-2 text-sm">
-            <div>Email: {user.email}</div>
+            <div>Email: {user.email ?? "—"}</div>
             <div>Vai trò: {user.role}</div>
             <div>Số dư ví: {formatVnd(user.wallet?.balance ?? 0n)}</div>
             <div>Ngày tạo: {user.createdAt.toLocaleString("vi-VN")}</div>

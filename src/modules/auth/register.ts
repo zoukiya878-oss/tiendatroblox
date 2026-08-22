@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { registerSchema } from "./schemas";
 
-export type RegisterInput = { username: string; email: string; password: string };
+export type RegisterInput = { username: string; email?: string; password: string };
 
 export class RegisterError extends Error {}
 
@@ -12,10 +12,11 @@ export async function registerUser(input: RegisterInput) {
   if (!parsed.success) {
     throw new RegisterError(parsed.error.issues[0]?.message ?? "Dữ liệu không hợp lệ");
   }
-  const { username, email, password } = parsed.data;
+  const { username, password } = parsed.data;
+  const email = parsed.data.email ? parsed.data.email : null;
 
   const existing = await prisma.user.findFirst({
-    where: { OR: [{ username }, { email }] },
+    where: email ? { OR: [{ username }, { email }] } : { username },
     select: { username: true, email: true },
   });
   if (existing) {

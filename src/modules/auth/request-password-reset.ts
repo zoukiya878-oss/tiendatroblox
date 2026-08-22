@@ -10,7 +10,7 @@ const TOKEN_TTL_MS = 60 * 60 * 1000; // 1 giờ
  */
 export async function requestPasswordReset(email: string) {
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) return;
+  if (!user || !user.email) return;
 
   const token = crypto.randomBytes(32).toString("hex");
   const tokenHash = crypto.createHash("sha256").update(token).digest("hex");

@@ -21,7 +21,7 @@ export default async function ThongTinPage() {
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <Row label="Tên đăng nhập" value={user.username} />
-        <Row label="Email" value={user.email} />
+        <Row label="Email" value={user.email ?? "Chưa cập nhật"} />
         <Row
           label="Ngày tạo tài khoản"
           value={new Intl.DateTimeFormat("vi-VN", { dateStyle: "long" }).format(user.createdAt)}

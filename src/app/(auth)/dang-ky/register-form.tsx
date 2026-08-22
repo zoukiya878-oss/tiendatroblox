@@ -26,7 +26,7 @@ export function RegisterForm() {
   const onSubmit = handleSubmit((values) => {
     const formData = new FormData();
     formData.set("username", values.username);
-    formData.set("email", values.email);
+    formData.set("email", values.email ?? "");
     formData.set("password", values.password);
     formData.set("confirmPassword", values.confirmPassword);
     startTransition(() => formAction(formData));
@@ -47,8 +47,8 @@ export function RegisterForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="email">Email</Label>
-        <Input id="email" type="email" autoComplete="email" {...register("email")} />
+        <Label htmlFor="email">Email (không bắt buộc)</Label>
+        <Input id="email" type="email" autoComplete="email" placeholder="Dùng để lấy lại mật khẩu nếu quên" {...register("email")} />
         {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
       </div>
 

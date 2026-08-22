@@ -1,7 +1,10 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
+import Facebook from "next-auth/providers/facebook";
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
+import { findOrCreateOAuthUser } from "@/modules/auth/find-or-create-oauth-user";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
@@ -20,7 +23,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const user = await prisma.user.findFirst({
           where: { OR: [{ username }, { email: username }] },
         });
-        if (!user || user.locked) return null;
+        if (!user || user.locked || !user.passwordHash) return null;
 
         const valid = await bcrypt.compare(password, user.passwordHash);
         if (!valid) return null;
@@ -28,9 +31,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return { id: user.id, name: user.username, email: user.email, role: user.role };
       },
     }),
+    // ponytail: buttons wired now, inert until GOOGLE_CLIENT_ID/SECRET are set in .env
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    }),
+    Facebook({
+      clientId: process.env.FACEBOOK_CLIENT_ID || "",
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET || "",
+    }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
+      if ((account?.provider === "google" || account?.provider === "facebook") && token.email) {
+        const dbUser = await findOrCreateOAuthUser({
+          email: token.email,
+          displayName: token.name,
+        });
+        token.id = dbUser.id;
+        token.role = dbUser.role;
+        return token;
+      }
       if (user) {
         token.id = user.id as string;
         token.role = (user as { role: string }).role;

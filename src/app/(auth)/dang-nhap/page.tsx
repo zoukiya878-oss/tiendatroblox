@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LoginForm } from "./login-form";
+import { OAuthButtons } from "@/components/auth/oauth-buttons";
 
 export default async function DangNhapPage({
   searchParams,
@@ -16,6 +17,9 @@ export default async function DangNhapPage({
         </CardHeader>
         <CardContent>
           <LoginForm callbackUrl={callbackUrl || "/"} />
+          <div className="mt-4">
+            <OAuthButtons callbackUrl={callbackUrl || "/"} />
+          </div>
         </CardContent>
       </Card>
     </div>

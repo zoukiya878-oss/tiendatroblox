@@ -57,7 +57,7 @@ export default async function HomePage() {
                 size="lg"
                 className="bg-gradient-to-r from-primary to-brand-pink text-white hover:opacity-90"
                 nativeButton={false}
-                render={<Link href="/vat-pham" />}
+                render={<Link href="#dich-vu-noi-bat" />}
               >
                 Mua ngay <ArrowRight />
               </Button>
@@ -98,7 +98,7 @@ export default async function HomePage() {
 
       {/* Dịch vụ nổi bật — bìa danh mục, bấm vào ra danh sách sản phẩm của danh mục đó */}
       {categories.length > 0 && (
-        <section className="mx-auto w-full max-w-7xl px-4">
+        <section id="dich-vu-noi-bat" className="mx-auto w-full max-w-7xl scroll-mt-20 px-4">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-heading text-xl font-bold">🔥 Dịch vụ nổi bật</h2>
             <Link href="/vat-pham" className="text-sm text-primary hover:underline">

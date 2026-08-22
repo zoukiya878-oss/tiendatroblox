@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ShoppingCart, Wallet, Coins, Bell, ChevronDown, User, Package, Receipt } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -48,6 +49,14 @@ export async function Header({ settings }: { settings: SiteSettings }) {
       <div className="border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4">
           <Link href="/" className="flex items-center gap-2 font-heading text-xl font-black">
+            <Image
+              src="/logo-banner.png"
+              alt={settings.siteName}
+              width={500}
+              height={229}
+              priority
+              className="h-9 w-auto rounded-md sm:h-10"
+            />
             <span className="bg-gradient-to-r from-primary via-brand-pink to-accent bg-clip-text text-transparent">
               {settings.siteName}
             </span>

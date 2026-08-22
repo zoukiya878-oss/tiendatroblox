@@ -56,23 +56,32 @@ export function MobileBottomNav({
 
   return (
     <>
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 backdrop-blur lg:hidden">
-        <div className="mx-auto flex max-w-md items-center justify-between">
+      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 backdrop-blur lg:hidden">
+        <div className="mx-auto flex max-w-md items-end justify-between">
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
             className="flex flex-1 flex-col items-center gap-0.5 py-1 text-muted-foreground"
           >
             <MenuIcon className="size-5" />
-            <span className="text-xs font-medium">Menu</span>
+            <span className="text-[11px] font-medium">Menu</span>
           </button>
 
-          <Link
-            href="/"
-            className="mx-2 flex flex-[1.3] flex-col items-center gap-0.5 rounded-2xl bg-gradient-to-r from-primary to-brand-pink py-2.5 text-white shadow-lg shadow-primary/30"
-          >
-            <Home className="size-5" />
-            <span className="text-xs font-bold">Trang chủ</span>
+          <Link href="/nap-tien" className="flex flex-1 flex-col items-center gap-0.5 py-1 text-muted-foreground">
+            <Wallet className="size-5" />
+            <span className="text-[11px] font-medium">Nạp tiền</span>
+          </Link>
+
+          <Link href="/" className="flex flex-1 flex-col items-center gap-1">
+            <span className="flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-primary to-brand-pink text-white shadow-lg shadow-primary/40 ring-4 ring-card">
+              <Home className="size-6" />
+            </span>
+            <span className="text-[11px] font-bold text-foreground">Trang chủ</span>
+          </Link>
+
+          <Link href="/lien-he" className="flex flex-1 flex-col items-center gap-0.5 py-1 text-muted-foreground">
+            <Phone className="size-5" />
+            <span className="text-[11px] font-medium">Liên hệ</span>
           </Link>
 
           <Link
@@ -80,7 +89,7 @@ export function MobileBottomNav({
             className="flex flex-1 flex-col items-center gap-0.5 py-1 text-muted-foreground"
           >
             <ListChecks className="size-5" />
-            <span className="text-xs font-medium">Đơn hàng</span>
+            <span className="text-[11px] font-medium">Đơn hàng</span>
           </Link>
         </div>
       </nav>

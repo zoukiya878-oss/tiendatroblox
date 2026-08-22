@@ -33,11 +33,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
         <Input id="password" name="password" type="password" autoComplete="current-password" required />
       </div>
 
-      <div className="flex justify-end text-sm">
-        <Link href="/quen-mat-khau" className="text-primary hover:underline">
-          Quên mật khẩu?
-        </Link>
-      </div>
+      {/* ponytail: quên mật khẩu tạm ẩn — chưa có email provider thật (Resend cần domain riêng để verify) */}
 
       <Button type="submit" disabled={pending} className="w-full">
         {pending ? "Đang đăng nhập..." : "Đăng nhập"}

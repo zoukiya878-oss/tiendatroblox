@@ -8,6 +8,7 @@ import {
   ListChecks,
   X,
   Home,
+  Wallet,
   ShoppingBag,
   Newspaper,
   HelpCircle,
@@ -22,6 +23,7 @@ import { formatVnd } from "@/lib/money";
 
 const NAV_LINKS = [
   { href: "/", label: "Trang chủ", icon: Home },
+  { href: "/nap-tien", label: "Nạp tiền", icon: Wallet },
   { href: "/vat-pham", label: "Vật phẩm", icon: ShoppingBag },
   { href: "/blog", label: "Blog", icon: Newspaper },
   { href: "/faq", label: "FAQ", icon: HelpCircle },

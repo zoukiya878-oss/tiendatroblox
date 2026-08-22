@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ShoppingCart, Wallet, Coins, ChevronDown, User, Package, Receipt } from "lucide-react";
+import { ShoppingCart, Wallet, Coins, Bell, ChevronDown, User, Package, Receipt } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatVnd } from "@/lib/money";
@@ -80,9 +80,7 @@ export async function Header({ settings }: { settings: SiteSettings }) {
           </nav>
 
           <div className="flex items-center gap-1.5">
-            <div className="hidden sm:block">
-              <ThemeToggle />
-            </div>
+            <ThemeToggle />
 
             <Button
               variant="secondary"
@@ -100,39 +98,62 @@ export async function Header({ settings }: { settings: SiteSettings }) {
             </Button>
 
             {session?.user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  render={
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      className="inline-flex rounded-full border border-emerald-500/30 bg-emerald-500/15 text-emerald-500 hover:bg-emerald-500/25"
-                    >
-                      <Coins className="size-3.5" />
-                      {formatVnd(wallet?.balance ?? 0n)}
-                      <ChevronDown className="hidden size-3.5 sm:inline" />
-                    </Button>
-                  }
-                />
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>{session.user.name}</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem render={<Link href="/tai-khoan/thong-tin" />}>
-                    <User /> Tài khoản
-                  </DropdownMenuItem>
-                  <DropdownMenuItem render={<Link href="/tai-khoan/don-hang" />}>
-                    <Package /> Đơn hàng
-                  </DropdownMenuItem>
-                  <DropdownMenuItem render={<Link href="/tai-khoan/lich-su-giao-dich" />}>
-                    <Receipt /> Giao dịch
-                  </DropdownMenuItem>
-                  <DropdownMenuItem render={<Link href="/nap-tien" />}>
-                    <Wallet /> Nạp tiền
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <HeaderSignOutItem />
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="inline-flex rounded-full border border-emerald-500/30 bg-emerald-500/15 text-emerald-500 hover:bg-emerald-500/25"
+                  nativeButton={false}
+                  render={<Link href="/nap-tien" />}
+                >
+                  <Coins className="size-3.5" />
+                  {formatVnd(wallet?.balance ?? 0n)}
+                </Button>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    render={
+                      <Button variant="secondary" size="icon" className="rounded-full" aria-label="Thông báo">
+                        <Bell className="size-4" />
+                      </Button>
+                    }
+                  />
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Thông báo</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <p className="px-2 py-3 text-center text-sm text-muted-foreground">Chưa có thông báo mới</p>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    render={
+                      <Button variant="secondary" size="sm" className="rounded-full">
+                        <User className="size-3.5" />
+                        <ChevronDown className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>{session.user.name}</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem render={<Link href="/tai-khoan/thong-tin" />}>
+                      <User /> Tài khoản
+                    </DropdownMenuItem>
+                    <DropdownMenuItem render={<Link href="/tai-khoan/don-hang" />}>
+                      <Package /> Đơn hàng
+                    </DropdownMenuItem>
+                    <DropdownMenuItem render={<Link href="/tai-khoan/lich-su-giao-dich" />}>
+                      <Receipt /> Giao dịch
+                    </DropdownMenuItem>
+                    <DropdownMenuItem render={<Link href="/nap-tien" />}>
+                      <Wallet /> Nạp tiền
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <HeaderSignOutItem />
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
             ) : (
               <div className="hidden items-center gap-2 sm:flex">
                 <Button variant="ghost" size="sm" nativeButton={false} render={<Link href="/dang-nhap" />}>

@@ -8,12 +8,20 @@ const PROVIDER_STYLE: Record<string, { icon: typeof Landmark; className: string 
   CARD: { icon: CreditCard, className: "bg-amber-500/15 text-amber-500" },
 };
 
-export function ProviderIcon({ provider, className }: { provider: string; className?: string }) {
+export function ProviderIcon({
+  provider,
+  className,
+  iconClassName = "size-4",
+}: {
+  provider: string;
+  className?: string;
+  iconClassName?: string;
+}) {
   const style = PROVIDER_STYLE[provider] ?? PROVIDER_STYLE.CARD;
   const Icon = style.icon;
   return (
     <span className={cn("flex size-8 shrink-0 items-center justify-center rounded-full", style.className, className)}>
-      <Icon className="size-4" />
+      <Icon className={iconClassName} />
     </span>
   );
 }

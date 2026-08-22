@@ -1,14 +1,22 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { ArrowRight } from "lucide-react";
 import { auth } from "@/lib/auth";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ProviderIcon } from "@/components/payment/provider-icon";
 
 const METHODS = [
-  { href: "/nap-tien/ngan-hang", name: "Ngân hàng", desc: "Chuyển khoản qua ngân hàng", provider: "BANK" },
-  { href: "/nap-tien/momo", name: "Momo", desc: "Nạp tiền qua ví Momo", provider: "MOMO" },
-  { href: "/nap-tien/thesieure", name: "TheSieuRe", desc: "Nạp tiền qua cổng TheSieuRe", provider: "THESIEURE" },
-  { href: "/nap-tien/the-cao", name: "Thẻ cào", desc: "Nạp bằng thẻ cào điện thoại", provider: "CARD" },
+  {
+    href: "/nap-tien/ngan-hang",
+    name: "Ngân hàng",
+    desc: "Chuyển khoản qua ứng dụng ngân hàng, tự động cộng tiền trong vài phút.",
+    provider: "BANK",
+  },
+  {
+    href: "/nap-tien/the-cao",
+    name: "Thẻ cào",
+    desc: "Nạp bằng thẻ cào Viettel, Vinaphone, Mobifone.",
+    provider: "CARD",
+  },
 ];
 
 export default async function NapTienPage() {
@@ -16,23 +24,25 @@ export default async function NapTienPage() {
   if (!session?.user?.id) redirect("/dang-nhap?callbackUrl=/nap-tien");
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-6 text-xl font-semibold">Nạp tiền vào ví</h1>
-      <div className="grid gap-4 sm:grid-cols-2">
+    <div className="mx-auto max-w-2xl px-4 py-10">
+      <div className="mb-8 text-center">
+        <h1 className="font-heading text-2xl font-extrabold">Nạp tiền vào ví</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Chọn phương thức nạp tiền phù hợp với bạn</p>
+      </div>
+
+      <div className="flex flex-col gap-4">
         {METHODS.map((m) => (
-          <Link key={m.href} href={m.href}>
-            <Card className="h-full transition-colors hover:bg-muted/50">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <ProviderIcon provider={m.provider} className="size-10" />
-                  <div>
-                    <CardTitle>{m.name}</CardTitle>
-                    <CardDescription>{m.desc}</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent />
-            </Card>
+          <Link
+            key={m.href}
+            href={m.href}
+            className="group flex items-center gap-4 rounded-2xl bg-card p-5 ring-1 ring-foreground/10 transition-all hover:-translate-y-0.5 hover:ring-primary/50"
+          >
+            <ProviderIcon provider={m.provider} className="size-14 shrink-0 rounded-2xl" iconClassName="size-6" />
+            <div className="min-w-0 flex-1">
+              <h2 className="font-heading text-lg font-bold">{m.name}</h2>
+              <p className="mt-0.5 text-sm text-muted-foreground">{m.desc}</p>
+            </div>
+            <ArrowRight className="size-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
           </Link>
         ))}
       </div>

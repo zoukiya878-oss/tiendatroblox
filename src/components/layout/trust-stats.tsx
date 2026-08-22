@@ -19,8 +19,8 @@ const STATS = [
   },
   {
     label: "Phương thức",
-    value: "4",
-    sub: "Bank, MoMo, TheSieuRe, Thẻ cào",
+    value: "2",
+    sub: "Ngân hàng, Thẻ cào",
     icon: CreditCard,
     bar: "bg-primary",
     valueClass: "text-primary",

@@ -29,10 +29,7 @@ function parseAmount(formData: FormData): bigint | null {
   return amount;
 }
 
-async function submitTopup(
-  provider: "BANK" | "MOMO" | "THESIEURE",
-  formData: FormData
-): Promise<TopupState> {
+async function submitTopup(provider: "BANK", formData: FormData): Promise<TopupState> {
   const userId = await requireUserId();
   const amount = parseAmount(formData);
   if (amount === null) {
@@ -45,14 +42,6 @@ async function submitTopup(
 
 export async function createBankTopupAction(_prev: TopupState, formData: FormData): Promise<TopupState> {
   return submitTopup("BANK", formData);
-}
-
-export async function createMomoTopupAction(_prev: TopupState, formData: FormData): Promise<TopupState> {
-  return submitTopup("MOMO", formData);
-}
-
-export async function createThesieureTopupAction(_prev: TopupState, formData: FormData): Promise<TopupState> {
-  return submitTopup("THESIEURE", formData);
 }
 
 export async function createCardTopupAction(_prev: TopupState, formData: FormData): Promise<TopupState> {

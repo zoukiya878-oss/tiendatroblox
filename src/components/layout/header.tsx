@@ -121,13 +121,13 @@ export async function Header({ settings }: { settings: SiteSettings }) {
             </div>
 
             <Button
-              variant="ghost"
+              variant="secondary"
               size="icon"
-              className="relative"
+              className="relative rounded-full"
               nativeButton={false}
               render={<Link href="/gio-hang" aria-label="Giỏ hàng" />}
             >
-              <ShoppingCart />
+              <ShoppingCart className="size-4" />
               {cartCount > 0 && (
                 <Badge className="absolute -right-1 -top-1 h-5 min-w-5 justify-center rounded-full bg-brand-pink px-1 text-[10px] text-white">
                   {cartCount > 99 ? "99+" : cartCount}
@@ -139,8 +139,12 @@ export async function Header({ settings }: { settings: SiteSettings }) {
               <DropdownMenu>
                 <DropdownMenuTrigger
                   render={
-                    <Button variant="secondary" size="sm" className="hidden sm:inline-flex border border-accent/40">
-                      <Wallet className="size-3.5 text-accent" />
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      className="hidden rounded-full border border-accent/30 bg-accent/10 text-accent hover:bg-accent/20 sm:inline-flex"
+                    >
+                      <Wallet className="size-3.5" />
                       {formatVnd(wallet?.balance ?? 0n)}
                       <ChevronDown className="size-3.5" />
                     </Button>
@@ -184,7 +188,7 @@ export async function Header({ settings }: { settings: SiteSettings }) {
             <Sheet>
               <SheetTrigger
                 render={
-                  <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Menu">
+                  <Button variant="secondary" size="icon" className="rounded-full lg:hidden" aria-label="Menu">
                     <Menu />
                   </Button>
                 }

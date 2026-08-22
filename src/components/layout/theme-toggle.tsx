@@ -19,7 +19,7 @@ export function ThemeToggle() {
   }
 
   return (
-    <Button variant="ghost" size="icon" onClick={toggle} aria-label="Đổi giao diện sáng/tối">
+    <Button variant="secondary" size="icon" className="rounded-full" onClick={toggle} aria-label="Đổi giao diện sáng/tối">
       {isDark ? <Sun className="size-4.5" /> : <Moon className="size-4.5" />}
     </Button>
   );

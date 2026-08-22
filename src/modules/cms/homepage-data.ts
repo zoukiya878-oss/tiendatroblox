@@ -12,6 +12,7 @@ export async function getRecentTopups(limit = 10) {
     id: t.id,
     username: maskUsername(t.user.username),
     amount: t.amount,
+    provider: t.provider,
     createdAt: t.createdAt,
   }));
 }

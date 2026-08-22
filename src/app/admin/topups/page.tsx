@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { simulateTopupAction } from "./actions";
+import { ProviderIcon } from "@/components/payment/provider-icon";
 
 export default async function AdminTopupsPage() {
   const topups = await prisma.topup.findMany({
@@ -43,7 +44,12 @@ export default async function AdminTopupsPage() {
               <TableRow key={t.id}>
                 <TableCell className="font-mono text-xs">{t.topupCode}</TableCell>
                 <TableCell>{t.user.username}</TableCell>
-                <TableCell>{t.provider}</TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <ProviderIcon provider={t.provider} className="size-6" />
+                    {t.provider}
+                  </div>
+                </TableCell>
                 <TableCell>{formatVnd(t.amount)}</TableCell>
                 <TableCell>{formatVnd(t.fee)}</TableCell>
                 <TableCell>{formatVnd(t.netAmount)}</TableCell>

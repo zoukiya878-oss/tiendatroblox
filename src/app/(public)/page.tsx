@@ -11,6 +11,7 @@ import { vi } from "date-fns/locale";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/products/product-card";
+import { ProviderIcon } from "@/components/payment/provider-icon";
 
 const MEDALS = ["🥇", "🥈", "🥉"];
 
@@ -27,19 +28,45 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col gap-14 pb-16">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/20 via-background to-accent/10">
-        <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 px-4 py-20 text-center">
-          <h1 className="max-w-3xl text-balance font-heading text-3xl font-bold sm:text-5xl">
-            {settings.heroTitle}
-          </h1>
-          <p className="max-w-xl text-balance text-muted-foreground">{settings.heroDescription}</p>
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <Button size="lg" nativeButton={false} render={<Link href="/vat-pham" />}>
-              Mua ngay <ArrowRight />
-            </Button>
-            <Button size="lg" variant="outline" nativeButton={false} render={<Link href="/nap-tien" />}>
-              <Wallet /> Nạp tiền
-            </Button>
+      <section className="mx-auto w-full max-w-7xl px-4 pt-6">
+        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-card via-card to-primary/10 px-6 py-14 sm:px-12 sm:py-20">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-primary/30 blur-3xl"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-24 -left-24 size-72 rounded-full bg-brand-pink/20 blur-3xl"
+          />
+
+          <div className="relative flex flex-col gap-6">
+            <span className="w-fit rounded-full border border-accent/40 bg-accent/10 px-4 py-1.5 text-xs font-bold tracking-widest text-accent uppercase">
+              Shop game giá rẻ
+            </span>
+
+            <h1 className="max-w-2xl text-balance font-heading text-4xl leading-[1.1] font-black sm:text-6xl">
+              <span className="bg-gradient-to-r from-primary via-brand-pink to-accent bg-clip-text text-transparent">
+                {settings.heroTitle}
+              </span>
+            </h1>
+
+            <p className="max-w-xl text-balance text-muted-foreground sm:text-lg">
+              {settings.heroDescription}
+            </p>
+
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-primary to-brand-pink text-white hover:opacity-90"
+                nativeButton={false}
+                render={<Link href="/vat-pham" />}
+              >
+                Mua ngay <ArrowRight />
+              </Button>
+              <Button size="lg" variant="outline" nativeButton={false} render={<Link href="/nap-tien" />}>
+                <Wallet /> Nạp tiền
+              </Button>
+            </div>
           </div>
         </div>
       </section>
@@ -105,8 +132,14 @@ export default async function HomePage() {
           <CardContent className="flex flex-col gap-2.5">
             {topups.length === 0 && <p className="text-sm text-muted-foreground">Chưa có giao dịch nào.</p>}
             {topups.map((t) => (
-              <div key={t.id} className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">{t.username}</span>
+              <div key={t.id} className="flex items-center gap-3 text-sm">
+                <ProviderIcon provider={t.provider} />
+                <div className="flex flex-1 flex-col">
+                  <span className="text-muted-foreground">{t.username} nạp thành công</span>
+                  <span className="text-xs text-muted-foreground/70">
+                    {formatDistanceToNow(t.createdAt, { addSuffix: true, locale: vi })}
+                  </span>
+                </div>
                 <span className="font-medium text-primary">+{formatVnd(t.amount)}</span>
               </div>
             ))}

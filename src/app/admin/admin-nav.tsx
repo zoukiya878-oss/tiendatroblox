@@ -2,11 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { MenuIcon } from "lucide-react";
+import { MenuIcon, XIcon } from "lucide-react";
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard" },
@@ -60,27 +58,59 @@ export function AdminSidebar() {
   );
 }
 
+// ponytail: plain useState toggle + fixed div instead of the Dialog/Portal-based
+// Sheet component — the base-ui trigger's touch handling was unreliable inside
+// Facebook Messenger's in-app WebView, a hand-rolled onClick has no such surface.
 export function AdminMobileNav() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setOpen(false);
+  }
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   return (
     <div className="sticky top-0 z-40 border-b border-border bg-card p-3 md:hidden">
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger
-          render={
-            <Button variant="outline" size="icon" aria-label="Menu">
-              <MenuIcon />
-            </Button>
-          }
-        />
-        <SheetContent side="left">
-          <SheetHeader>
-            <SheetTitle>Tiendatroblox Admin</SheetTitle>
-          </SheetHeader>
-          <div className="px-4">
+      <button
+        type="button"
+        aria-label="Menu"
+        onClick={() => setOpen((v) => !v)}
+        className="flex size-9 items-center justify-center rounded-full border border-border bg-background active:scale-95"
+      >
+        <MenuIcon className="size-4.5" />
+      </button>
+
+      {open && (
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-black/40"
+            onClick={() => setOpen(false)}
+            aria-hidden
+          />
+          <div className="fixed inset-y-0 left-0 z-50 flex w-72 max-w-[85vw] flex-col gap-4 overflow-y-auto bg-card p-4 shadow-xl">
+            <div className="flex items-center justify-between">
+              <span className="font-heading text-lg font-semibold">Tiendatroblox Admin</span>
+              <button
+                type="button"
+                aria-label="Đóng menu"
+                onClick={() => setOpen(false)}
+                className="flex size-8 items-center justify-center rounded-full hover:bg-muted"
+              >
+                <XIcon className="size-4" />
+              </button>
+            </div>
             <NavLinks onNavigate={() => setOpen(false)} />
           </div>
-        </SheetContent>
-      </Sheet>
+        </>
+      )}
     </div>
   );
 }

@@ -63,7 +63,7 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
               <select
                 name="role"
                 defaultValue={user.role}
-                className="h-8 rounded-lg border border-input bg-transparent px-2 text-sm dark:bg-input/30"
+                className="h-8 rounded-lg border border-input bg-background px-2 text-sm text-foreground"
               >
                 <option value="CUSTOMER">CUSTOMER</option>
                 <option value="STAFF">STAFF</option>

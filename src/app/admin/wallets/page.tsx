@@ -33,7 +33,7 @@ export default async function AdminWalletsPage() {
               <select
                 id="direction"
                 name="direction"
-                className="h-8 rounded-lg border border-input bg-transparent px-2 text-sm dark:bg-input/30"
+                className="h-8 rounded-lg border border-input bg-background px-2 text-sm text-foreground"
               >
                 <option value="credit">Cộng tiền (+)</option>
                 <option value="debit">Trừ tiền (-)</option>

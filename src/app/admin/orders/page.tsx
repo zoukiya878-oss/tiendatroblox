@@ -60,7 +60,7 @@ export default async function AdminOrdersPage({
           <select
             name="status"
             defaultValue={sp.status ?? ""}
-            className="h-8 rounded-lg border border-input bg-transparent px-2 text-sm dark:bg-input/30"
+            className="h-8 rounded-lg border border-input bg-background px-2 text-sm text-foreground"
           >
             <option value="">Tất cả</option>
             {Object.entries(STATUS_LABEL).map(([k, v]) => (

@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { ImagePlus } from "lucide-react";
 import type { DeliveryType, Product, ProductField, ProductFieldType, ProductImage } from "@prisma/client";
 
 type FieldRow = {
@@ -130,7 +131,7 @@ export function ProductForm({
             name="categoryId"
             required
             defaultValue={product?.categoryId}
-            className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring dark:bg-input/30"
+            className="h-8 rounded-lg border border-input bg-background px-2.5 text-sm text-foreground outline-none focus-visible:border-ring"
           >
             <option value="" disabled>
               -- Chọn danh mục --
@@ -166,7 +167,7 @@ export function ProductForm({
             id="deliveryType"
             name="deliveryType"
             defaultValue={product?.deliveryType ?? "INSTANT"}
-            className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring dark:bg-input/30"
+            className="h-8 rounded-lg border border-input bg-background px-2.5 text-sm text-foreground outline-none focus-visible:border-ring"
           >
             <option value="INSTANT">Giao ngay (INSTANT)</option>
             <option value="MANUAL">Giao thủ công (MANUAL)</option>
@@ -193,31 +194,42 @@ export function ProductForm({
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <Label>Hình ảnh sản phẩm</Label>
-          <div className="flex gap-2">
-            <Button type="button" variant="outline" size="sm" onClick={addImageUrl}>
-              + Thêm URL ảnh
-            </Button>
-          </div>
+          <Button type="button" variant="outline" size="sm" onClick={addImageUrl}>
+            + Thêm bằng URL
+          </Button>
         </div>
-        <Input type="file" name="imageFiles" multiple accept="image/*" />
+
+        <label
+          htmlFor="imageFiles"
+          className="flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-input bg-background/50 px-4 py-8 text-center transition-colors hover:border-primary hover:bg-primary/5"
+        >
+          <ImagePlus className="size-7 text-muted-foreground" />
+          <span className="text-sm font-medium">Bấm để chọn ảnh (chọn nhiều được)</span>
+          <span className="text-xs text-muted-foreground">Ảnh sẽ được đẩy lên khi bấm Lưu</span>
+        </label>
+        <Input id="imageFiles" type="file" name="imageFiles" multiple accept="image/*" className="hidden" />
         <input type="hidden" name="imagesJson" ref={imagesInputRef} />
+
         {images.length > 0 && (
-          <ul className="flex flex-col gap-1">
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
             {images.map((img, idx) => (
-              <li key={idx} className="flex items-center gap-2 rounded-lg border border-border p-2 text-sm">
-                <img src={img.url} alt={img.alt} className="size-10 rounded object-cover" />
-                <span className="flex-1 truncate">{img.url}</span>
-                <Button
+              <div key={idx} className="group relative aspect-square overflow-hidden rounded-lg border border-border">
+                <img src={img.url} alt={img.alt} className="size-full object-cover" />
+                <button
                   type="button"
-                  variant="ghost"
-                  size="sm"
                   onClick={() => setImages((prev) => prev.filter((_, i) => i !== idx))}
+                  className="absolute inset-0 flex items-center justify-center bg-black/60 text-xs font-medium text-white opacity-0 transition-opacity group-hover:opacity-100"
                 >
                   Xoá
-                </Button>
-              </li>
+                </button>
+                {idx === 0 && (
+                  <span className="absolute bottom-0 left-0 right-0 bg-primary/90 py-0.5 text-center text-[10px] font-semibold text-primary-foreground">
+                    Ảnh chính
+                  </span>
+                )}
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
 
@@ -246,7 +258,7 @@ export function ProductForm({
               onChange={(e) =>
                 setFields((prev) => prev.map((r, i) => (i === idx ? { ...r, type: e.target.value as ProductFieldType } : r)))
               }
-              className="h-8 rounded-lg border border-input bg-transparent px-2 text-sm dark:bg-input/30"
+              className="h-8 rounded-lg border border-input bg-background px-2 text-sm text-foreground"
             >
               <option value="TEXT">TEXT</option>
               <option value="NUMBER">NUMBER</option>

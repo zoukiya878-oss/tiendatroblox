@@ -86,7 +86,7 @@ export function BlogForm({ action, post }: { action: (formData: FormData) => voi
             id="status"
             name="status"
             defaultValue={post?.status ?? "DRAFT"}
-            className="h-8 rounded-lg border border-input bg-transparent px-2 text-sm dark:bg-input/30"
+            className="h-8 rounded-lg border border-input bg-background px-2 text-sm text-foreground"
           >
             <option value="DRAFT">Nháp</option>
             <option value="PUBLISHED">Đã xuất bản</option>

@@ -34,7 +34,7 @@ export function CouponForm({ action, coupon }: { action: (formData: FormData) =>
           id="type"
           name="type"
           defaultValue={coupon?.type ?? "PERCENT"}
-          className="h-8 rounded-lg border border-input bg-transparent px-2 text-sm dark:bg-input/30"
+          className="h-8 rounded-lg border border-input bg-background px-2 text-sm text-foreground"
         >
           <option value="PERCENT">Phần trăm (%)</option>
           <option value="FIXED_AMOUNT">Số tiền cố định (VND)</option>

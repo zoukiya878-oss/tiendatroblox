@@ -127,7 +127,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
                 <select
                   name="status"
                   defaultValue={order.status}
-                  className="h-8 rounded-lg border border-input bg-transparent px-2 text-sm dark:bg-input/30"
+                  className="h-8 rounded-lg border border-input bg-background px-2 text-sm text-foreground"
                 >
                   {Object.entries(STATUS_LABEL).map(([k, v]) => (
                     <option key={k} value={k}>

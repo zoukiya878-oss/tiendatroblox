@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro, Geist_Mono } from "next/font/google";
+import { Be_Vietnam_Pro, Baloo_2, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -18,6 +18,14 @@ const bodyFont = Be_Vietnam_Pro({
   variable: "--font-sans",
   subsets: ["latin", "vietnamese"],
   weight: ["400", "500", "600", "700", "800", "900"],
+});
+
+// Rounded, chunky display font for headings/CTAs — reads more "gaming" than
+// the body sans while still carrying Vietnamese diacritics correctly.
+const headingFont = Baloo_2({
+  variable: "--font-heading",
+  subsets: ["latin", "vietnamese"],
+  weight: ["600", "700", "800"],
 });
 
 const geistMono = Geist_Mono({
@@ -40,7 +48,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html
       lang="vi"
       suppressHydrationWarning
-      className={`${bodyFont.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${bodyFont.variable} ${headingFont.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
         {/* ponytail: inline script (no next-themes dep) — sets the class before

@@ -100,7 +100,7 @@ export default async function HomePage() {
       {featured.length > 0 && (
         <section className="mx-auto w-full max-w-7xl px-4">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-heading text-xl font-bold">🔥 Sản phẩm nổi bật</h2>
+            <h2 className="font-heading text-xl font-bold">🔥 Dịch vụ nổi bật</h2>
             <Link href="/vat-pham" className="text-sm text-primary hover:underline">
               Xem tất cả
             </Link>

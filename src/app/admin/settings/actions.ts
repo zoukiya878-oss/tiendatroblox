@@ -4,6 +4,10 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { getSiteSettings } from "@/modules/cms/site-settings";
 import { saveSiteSettings } from "@/modules/cms/admin-settings";
+import {
+  getPaymentIntegrationSettings,
+  savePaymentIntegrationSettings,
+} from "@/modules/cms/payment-integration-settings";
 import { writeAuditLog, auditJson } from "@/modules/audit/log";
 
 async function requireAdmin() {
@@ -45,4 +49,28 @@ export async function updateSiteSettingsAction(formData: FormData) {
 
   revalidatePath("/admin/settings");
   revalidatePath("/");
+}
+
+export async function updatePaymentIntegrationSettingsAction(formData: FormData) {
+  const actorUserId = await requireAdmin();
+  const before = await getPaymentIntegrationSettings();
+
+  const apiKeyInput = String(formData.get("gachthefastApiKey") ?? "").trim();
+  const next = {
+    gachthefastApiKey: apiKeyInput || before.gachthefastApiKey,
+    gachthefastPartnerId: String(formData.get("gachthefastPartnerId") ?? "").trim(),
+  };
+
+  await savePaymentIntegrationSettings(next);
+  // Không audit-log giá trị key thật — chỉ ghi nhận có thay đổi hay không.
+  await writeAuditLog({
+    actorUserId,
+    action: "SETTINGS_UPDATE",
+    entityType: "PaymentIntegration",
+    entityId: "gachthefast",
+    beforeData: auditJson({ hasKey: !!before.gachthefastApiKey }),
+    afterData: auditJson({ hasKey: !!next.gachthefastApiKey }),
+  });
+
+  revalidatePath("/admin/settings");
 }

@@ -1,13 +1,14 @@
 import { getSiteSettings } from "@/modules/cms/site-settings";
+import { getPaymentIntegrationSettings } from "@/modules/cms/payment-integration-settings";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { updateSiteSettingsAction } from "./actions";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { updateSiteSettingsAction, updatePaymentIntegrationSettingsAction } from "./actions";
 
 export default async function AdminSettingsPage() {
-  const settings = await getSiteSettings();
+  const [settings, integrations] = await Promise.all([getSiteSettings(), getPaymentIntegrationSettings()]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -65,6 +66,42 @@ export default async function AdminSettingsPage() {
             </div>
             <div className="md:col-span-2">
               <Button type="submit">Lưu cài đặt</Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Tích hợp thẻ cào — gachthefast.com</CardTitle>
+          <CardDescription>
+            Vào gachthefast.com → mục &quot;Kết nối API&quot; để lấy API Key. Key được lưu riêng, không hiện ở trang
+            khách. Chưa nhập key thì thẻ cào vẫn tạo được nhưng phải admin duyệt tay ở /admin/topups.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form action={updatePaymentIntegrationSettingsAction} className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="gachthefastApiKey">API Key</Label>
+              <Input
+                id="gachthefastApiKey"
+                name="gachthefastApiKey"
+                type="password"
+                autoComplete="off"
+                placeholder={integrations.gachthefastApiKey ? "•••••••• (đã lưu, để trống = giữ nguyên)" : "Dán API Key vào đây"}
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="gachthefastPartnerId">Partner ID / Merchant ID (nếu có)</Label>
+              <Input
+                id="gachthefastPartnerId"
+                name="gachthefastPartnerId"
+                autoComplete="off"
+                defaultValue={integrations.gachthefastPartnerId}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <Button type="submit">Lưu API Key</Button>
             </div>
           </form>
         </CardContent>

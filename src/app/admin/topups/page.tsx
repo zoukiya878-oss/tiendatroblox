@@ -3,7 +3,7 @@ import { formatVnd } from "@/lib/money";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { simulateTopupAction } from "./actions";
+import { simulateTopupAction, manualApproveTopupAction } from "./actions";
 import { ProviderIcon } from "@/components/payment/provider-icon";
 
 export default async function AdminTopupsPage() {
@@ -36,7 +36,7 @@ export default async function AdminTopupsPage() {
               <TableHead>Trạng thái</TableHead>
               <TableHead>Tạo lúc</TableHead>
               <TableHead>Hoàn tất</TableHead>
-              {isDev && <TableHead>Hành động</TableHead>}
+              <TableHead>Hành động</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -62,24 +62,36 @@ export default async function AdminTopupsPage() {
                 <TableCell className="text-xs text-muted-foreground">
                   {t.completedAt ? t.completedAt.toLocaleString("vi-VN") : "-"}
                 </TableCell>
-                {isDev && (
-                  <TableCell>
-                    {t.status === "PENDING" && (
-                      <div className="flex gap-1">
-                        <form action={simulateTopupAction.bind(null, t.topupCode, true)}>
-                          <Button size="sm" type="submit">
-                            Simulate Success
-                          </Button>
-                        </form>
-                        <form action={simulateTopupAction.bind(null, t.topupCode, false)}>
-                          <Button size="sm" variant="destructive" type="submit">
-                            Simulate Failed
-                          </Button>
-                        </form>
-                      </div>
-                    )}
-                  </TableCell>
-                )}
+                <TableCell>
+                  {t.status === "PENDING" && (
+                    <div className="flex flex-wrap gap-1">
+                      <form action={manualApproveTopupAction.bind(null, t.topupCode, true)}>
+                        <Button size="sm" type="submit">
+                          Duyệt tay
+                        </Button>
+                      </form>
+                      <form action={manualApproveTopupAction.bind(null, t.topupCode, false)}>
+                        <Button size="sm" variant="destructive" type="submit">
+                          Từ chối
+                        </Button>
+                      </form>
+                      {isDev && (
+                        <>
+                          <form action={simulateTopupAction.bind(null, t.topupCode, true)}>
+                            <Button size="sm" variant="outline" type="submit">
+                              Simulate Success
+                            </Button>
+                          </form>
+                          <form action={simulateTopupAction.bind(null, t.topupCode, false)}>
+                            <Button size="sm" variant="outline" type="submit">
+                              Simulate Failed
+                            </Button>
+                          </form>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

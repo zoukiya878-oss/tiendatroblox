@@ -40,3 +40,29 @@ export async function simulateTopupAction(topupCode: string, success: boolean) {
 
   revalidatePath("/admin/topups");
 }
+
+// Duyệt tay production — dùng khi provider (VD gachthefast) không tự bắn
+// callback được (lỗi hạ tầng phía họ). Admin tự đối chiếu bằng mắt (VD xem
+// lịch sử "Thẻ đúng" bên gachthefast) rồi bấm duyệt, có ghi audit log rõ ai
+// duyệt để truy vết nếu duyệt sai.
+export async function manualApproveTopupAction(topupCode: string, success: boolean) {
+  const actorUserId = await requireAdmin();
+
+  const result = await processTopupWebhook({
+    provider: "ADMIN_MANUAL",
+    externalEventId: crypto.randomUUID(),
+    topupCode,
+    success,
+    payload: { manuallyApprovedBy: actorUserId },
+  });
+
+  await writeAuditLog({
+    actorUserId,
+    action: success ? "TOPUP_APPROVE" : "TOPUP_REJECT",
+    entityType: "Topup",
+    entityId: topupCode,
+    afterData: auditJson(result),
+  });
+
+  revalidatePath("/admin/topups");
+}

@@ -12,6 +12,7 @@ import { ThemeToggle } from "@/components/layout/theme-toggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -145,7 +146,9 @@ export async function Header({ settings }: { settings: SiteSettings }) {
                     }
                   />
                   <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>{session.user.name}</DropdownMenuLabel>
+                    <DropdownMenuGroup>
+                      <DropdownMenuLabel>{session.user.name}</DropdownMenuLabel>
+                    </DropdownMenuGroup>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem render={<Link href="/tai-khoan/thong-tin" />}>
                       <User /> Tài khoản

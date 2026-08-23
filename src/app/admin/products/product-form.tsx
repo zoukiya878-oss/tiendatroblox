@@ -91,6 +91,14 @@ export function ProductForm({
     ]);
   }
 
+  function addAccountPasswordFields() {
+    setFields((prev) => [
+      ...prev,
+      { label: "Tài khoản", key: "tai-khoan", type: "TEXT", required: true, placeholder: "Nhập tài khoản", options: "", sortOrder: prev.length },
+      { label: "Mật khẩu", key: "mat-khau", type: "TEXT", required: true, placeholder: "Nhập mật khẩu", options: "", sortOrder: prev.length + 1 },
+    ]);
+  }
+
   return (
     <form action={action} className="flex flex-col gap-6">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -236,9 +244,14 @@ export function ProductForm({
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <Label>Trường thông tin động (Product Fields)</Label>
-          <Button type="button" variant="outline" size="sm" onClick={addField}>
-            + Thêm trường
-          </Button>
+          <div className="flex gap-2">
+            <Button type="button" variant="outline" size="sm" onClick={addAccountPasswordFields}>
+              + Tài khoản/Mật khẩu
+            </Button>
+            <Button type="button" variant="outline" size="sm" onClick={addField}>
+              + Thêm trường
+            </Button>
+          </div>
         </div>
         <input type="hidden" name="fieldsJson" ref={fieldsInputRef} />
         {fields.map((f, idx) => (

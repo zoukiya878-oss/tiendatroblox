@@ -59,9 +59,6 @@ export async function Header({ settings }: { settings: SiteSettings }) {
               priority
               className="h-9 w-auto rounded-md sm:h-10"
             />
-            <span className="bg-gradient-to-r from-primary via-brand-pink to-accent bg-clip-text text-transparent">
-              Roblox
-            </span>
           </Link>
 
           <nav className="hidden items-center gap-1 lg:flex">

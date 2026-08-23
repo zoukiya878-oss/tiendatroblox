@@ -5,7 +5,8 @@ export function formatVnd(amount: bigint | number): string {
 }
 
 export function toBigIntVnd(value: number | string): bigint {
-  const n = Math.round(Number(value));
+  const cleaned = typeof value === "string" ? value.replace(/,/g, "") : value;
+  const n = Math.round(Number(cleaned));
   if (!Number.isFinite(n) || n < 0) throw new Error("Invalid money amount");
   return BigInt(n);
 }

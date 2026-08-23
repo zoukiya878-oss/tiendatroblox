@@ -10,6 +10,7 @@ export interface SiteSettings {
   supportEmail: string;
   supportHours: string;
   bankName: string;
+  bankCode: string;
   bankAccountNumber: string;
   bankAccountName: string;
 }
@@ -24,6 +25,7 @@ const DEFAULTS: SiteSettings = {
   supportEmail: "",
   supportHours: "8:00 - 22:00 hàng ngày",
   bankName: "",
+  bankCode: "",
   bankAccountNumber: "",
   bankAccountName: "",
 };

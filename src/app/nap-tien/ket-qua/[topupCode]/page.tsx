@@ -16,6 +16,7 @@ const STATUS_LABEL: Record<string, string> = {
 
 const FIELD_LABEL: Record<string, string> = {
   bankName: "Ngân hàng",
+  bankCode: "Mã ngân hàng",
   accountNumber: "Số tài khoản",
   accountName: "Chủ tài khoản",
   transferContent: "Nội dung chuyển khoản",
@@ -45,6 +46,11 @@ export default async function TopupResultPage({
   const badgeVariant =
     topup.status === "SUCCESS" ? "default" : topup.status === "PENDING" ? "secondary" : "destructive";
 
+  const qrUrl =
+    meta.bankCode && meta.accountNumber
+      ? `https://img.vietqr.io/image/${encodeURIComponent(meta.bankCode)}-${encodeURIComponent(meta.accountNumber)}-compact2.png?amount=${meta.amount}&addInfo=${encodeURIComponent(meta.transferContent ?? topup.topupCode)}&accountName=${encodeURIComponent(meta.accountName ?? "")}`
+      : null;
+
   return (
     <div className="mx-auto max-w-md px-4 py-8">
       <Card>
@@ -56,11 +62,15 @@ export default async function TopupResultPage({
           <CardDescription>Số tiền: {formatVnd(topup.amount)}</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          {topup.status === "PENDING" && (
+          {topup.status === "PENDING" && qrUrl && (
+            // eslint-disable-next-line @next/next/no-img-element -- ảnh động từ VietQR, không qua next/image optimize
+            <img src={qrUrl} alt="QR chuyển khoản" className="mx-auto size-56 rounded-lg border border-border" />
+          )}
+          {topup.status === "PENDING" && !qrUrl && (
             <div className="mx-auto flex size-40 items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted text-center text-xs text-muted-foreground">
-              QR MOCK
+              Chưa cấu hình STK ngân hàng
               <br />
-              {topup.topupCode}
+              (Admin → Cài đặt)
             </div>
           )}
 

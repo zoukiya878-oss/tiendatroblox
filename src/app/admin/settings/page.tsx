@@ -54,7 +54,16 @@ export default async function AdminSettingsPage() {
             </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="bankName">Tên ngân hàng</Label>
-              <Input id="bankName" name="bankName" defaultValue={settings.bankName} />
+              <Input id="bankName" name="bankName" defaultValue={settings.bankName} placeholder="MB Bank" />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="bankCode">Mã ngân hàng (VietQR)</Label>
+              <Input
+                id="bankCode"
+                name="bankCode"
+                defaultValue={settings.bankCode}
+                placeholder="VD: MB, VCB, TCB, ICB..."
+              />
             </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="bankAccountNumber">Số tài khoản</Label>

@@ -34,6 +34,7 @@ export async function updateSiteSettingsAction(formData: FormData) {
     supportEmail: String(formData.get("supportEmail") ?? ""),
     supportHours: String(formData.get("supportHours") ?? ""),
     bankName: String(formData.get("bankName") ?? ""),
+    bankCode: String(formData.get("bankCode") ?? ""),
     bankAccountNumber: String(formData.get("bankAccountNumber") ?? ""),
     bankAccountName: String(formData.get("bankAccountName") ?? ""),
   };

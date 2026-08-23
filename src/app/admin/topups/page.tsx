@@ -65,16 +65,20 @@ export default async function AdminTopupsPage() {
                 <TableCell>
                   {t.status === "PENDING" && (
                     <div className="flex flex-wrap gap-1">
-                      <form action={manualApproveTopupAction.bind(null, t.topupCode, true)}>
-                        <Button size="sm" type="submit">
-                          Duyệt tay
-                        </Button>
-                      </form>
-                      <form action={manualApproveTopupAction.bind(null, t.topupCode, false)}>
-                        <Button size="sm" variant="destructive" type="submit">
-                          Từ chối
-                        </Button>
-                      </form>
+                      {t.provider === "CARD" && (
+                        <>
+                          <form action={manualApproveTopupAction.bind(null, t.topupCode, true)}>
+                            <Button size="sm" type="submit">
+                              Duyệt tay
+                            </Button>
+                          </form>
+                          <form action={manualApproveTopupAction.bind(null, t.topupCode, false)}>
+                            <Button size="sm" variant="destructive" type="submit">
+                              Từ chối
+                            </Button>
+                          </form>
+                        </>
+                      )}
                       {isDev && (
                         <>
                           <form action={simulateTopupAction.bind(null, t.topupCode, true)}>

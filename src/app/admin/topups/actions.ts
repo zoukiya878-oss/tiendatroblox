@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { processTopupWebhook } from "@/modules/topups/process-topup";
 import { writeAuditLog, auditJson } from "@/modules/audit/log";
 
@@ -47,6 +48,11 @@ export async function simulateTopupAction(topupCode: string, success: boolean) {
 // duyệt để truy vết nếu duyệt sai.
 export async function manualApproveTopupAction(topupCode: string, success: boolean) {
   const actorUserId = await requireAdmin();
+
+  const topup = await prisma.topup.findUnique({ where: { topupCode } });
+  if (topup?.provider !== "CARD") {
+    throw new Error("Duyệt tay chỉ áp dụng cho nạp thẻ cào");
+  }
 
   const result = await processTopupWebhook({
     provider: "ADMIN_MANUAL",

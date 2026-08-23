@@ -62,11 +62,11 @@ export default async function TopupResultPage({
           <CardDescription>Số tiền: {formatVnd(topup.amount)}</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          {topup.status === "PENDING" && qrUrl && (
+          {topup.status === "PENDING" && topup.provider === "BANK" && qrUrl && (
             // eslint-disable-next-line @next/next/no-img-element -- ảnh động từ VietQR, không qua next/image optimize
             <img src={qrUrl} alt="QR chuyển khoản" className="mx-auto size-56 rounded-lg border border-border" />
           )}
-          {topup.status === "PENDING" && !qrUrl && (
+          {topup.status === "PENDING" && topup.provider === "BANK" && !qrUrl && (
             <div className="mx-auto flex size-40 items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted text-center text-xs text-muted-foreground">
               Chưa cấu hình STK ngân hàng
               <br />

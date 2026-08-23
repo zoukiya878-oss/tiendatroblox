@@ -5,7 +5,7 @@ export const MockCardProvider: PaymentProvider = {
   async createTopupIntent({ topupCode, amount }) {
     return {
       instructions: {
-        note: "Nhập serial/mã thẻ ở form nạp thẻ (mock)",
+        note: "Hệ thống đang xử lý thẻ, thường mất vài giây đến vài phút",
         amount: amount.toString(),
         orderId: topupCode,
       },

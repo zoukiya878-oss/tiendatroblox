@@ -31,6 +31,7 @@ export async function updateSiteSettingsAction(formData: FormData) {
     facebookUrl: String(formData.get("facebookUrl") ?? ""),
     zaloUrl: String(formData.get("zaloUrl") ?? ""),
     telegramUrl: String(formData.get("telegramUrl") ?? ""),
+    youtubeUrl: String(formData.get("youtubeUrl") ?? ""),
     supportEmail: String(formData.get("supportEmail") ?? ""),
     supportHours: String(formData.get("supportHours") ?? ""),
     bankName: String(formData.get("bankName") ?? ""),

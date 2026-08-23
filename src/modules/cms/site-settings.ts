@@ -7,6 +7,7 @@ export interface SiteSettings {
   facebookUrl: string;
   zaloUrl: string;
   telegramUrl: string;
+  youtubeUrl: string;
   supportEmail: string;
   supportHours: string;
   bankName: string;
@@ -22,6 +23,7 @@ const DEFAULTS: SiteSettings = {
   facebookUrl: "",
   zaloUrl: "",
   telegramUrl: "",
+  youtubeUrl: "",
   supportEmail: "",
   supportHours: "8:00 - 22:00 hàng ngày",
   bankName: "",

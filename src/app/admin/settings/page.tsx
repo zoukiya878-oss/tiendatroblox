@@ -49,6 +49,10 @@ export default async function AdminSettingsPage() {
               <Input id="telegramUrl" name="telegramUrl" defaultValue={settings.telegramUrl} />
             </div>
             <div className="flex flex-col gap-1.5">
+              <Label htmlFor="youtubeUrl">Youtube URL</Label>
+              <Input id="youtubeUrl" name="youtubeUrl" defaultValue={settings.youtubeUrl} />
+            </div>
+            <div className="flex flex-col gap-1.5">
               <Label htmlFor="supportHours">Giờ hỗ trợ</Label>
               <Input id="supportHours" name="supportHours" defaultValue={settings.supportHours} />
             </div>

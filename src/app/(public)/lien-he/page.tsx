@@ -1,7 +1,7 @@
 import { Mail, Clock, Send, Landmark } from "lucide-react";
 import { getSiteSettings } from "@/modules/cms/site-settings";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FacebookIcon, ZaloIcon } from "@/components/icons/brand-icons";
+import { FacebookIcon, ZaloIcon, YoutubeIcon } from "@/components/icons/brand-icons";
 
 export default async function ContactPage() {
   const s = await getSiteSettings();
@@ -12,6 +12,7 @@ export default async function ContactPage() {
     { icon: FacebookIcon, label: "Facebook", value: s.facebookUrl, href: s.facebookUrl },
     { icon: ZaloIcon, label: "Zalo", value: s.zaloUrl, href: s.zaloUrl },
     { icon: Send, label: "Telegram", value: s.telegramUrl, href: s.telegramUrl },
+    { icon: YoutubeIcon, label: "Youtube", value: s.youtubeUrl, href: s.youtubeUrl },
   ].filter((c) => c.value);
 
   return (

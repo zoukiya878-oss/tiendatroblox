@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Send, Mail, Clock } from "lucide-react";
 import type { SiteSettings } from "@/modules/cms/site-settings";
-import { FacebookIcon, ZaloIcon } from "@/components/icons/brand-icons";
+import { FacebookIcon, ZaloIcon, YoutubeIcon } from "@/components/icons/brand-icons";
 
 export function Footer({ settings }: { settings: SiteSettings }) {
   return (
@@ -52,6 +52,11 @@ export function Footer({ settings }: { settings: SiteSettings }) {
             {settings.telegramUrl && (
               <a href={settings.telegramUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
                 <Send className="size-4" />
+              </a>
+            )}
+            {settings.youtubeUrl && (
+              <a href={settings.youtubeUrl} target="_blank" rel="noopener noreferrer" className="text-[#FF0000] hover:opacity-80">
+                <YoutubeIcon className="size-5" />
               </a>
             )}
           </div>

@@ -45,7 +45,7 @@ export default async function HomePage() {
             unoptimized
             width={500}
             height={229}
-            className="pointer-events-none absolute top-1/2 right-8 hidden w-72 -translate-y-1/2 rounded-2xl object-contain opacity-90 drop-shadow-2xl lg:block xl:w-96"
+            className="pointer-events-none absolute top-1/2 right-8 hidden w-96 -translate-y-1/2 rounded-2xl object-contain opacity-90 drop-shadow-2xl lg:block xl:w-[30rem]"
           />
 
           <div className="relative flex flex-col gap-6 lg:max-w-xl">

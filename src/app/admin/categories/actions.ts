@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { writeAuditLog, auditJson } from "@/modules/audit/log";
+import { storageProvider } from "@/providers/storage";
 
 async function requireAdmin() {
   const session = await auth();
@@ -29,15 +30,23 @@ export async function upsertCategoryAction(id: string | null, formData: FormData
   const name = String(formData.get("name") ?? "").trim();
   const slugInput = String(formData.get("slug") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim() || null;
-  const image = String(formData.get("image") ?? "").trim() || null;
   const sortOrder = Number(formData.get("sortOrder") ?? 0);
   const active = formData.get("active") === "on";
   const parentId = String(formData.get("parentId") ?? "").trim() || null;
+  const keepExistingImage = formData.get("keepExistingImage") === "1";
   if (!name) throw new Error("Tên danh mục là bắt buộc");
   const slug = slugInput || slugify(name);
 
+  let image: string | null = null;
+  const imageFile = formData.get("imageFile");
+  if (imageFile instanceof File && imageFile.size > 0) {
+    const buffer = Buffer.from(await imageFile.arrayBuffer());
+    image = await storageProvider.save(buffer, imageFile.name);
+  }
+
   if (id) {
     const before = await prisma.category.findUniqueOrThrow({ where: { id } });
+    if (!image) image = keepExistingImage ? before.image : null;
     const category = await prisma.category.update({
       where: { id },
       data: { name, slug, description, image, sortOrder, active, parentId },

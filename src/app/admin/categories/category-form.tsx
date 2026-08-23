@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
+import { ImagePlus, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { cn } from "@/lib/utils";
 import type { Category } from "@prisma/client";
 
 function slugify(text: string) {
@@ -41,6 +43,28 @@ export function CategoryForm({
   const [slug, setSlug] = useState(category?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(!!category);
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [preview, setPreview] = useState<string | null>(category?.image ?? null);
+  const [dragOver, setDragOver] = useState(false);
+  const [keepExistingImage, setKeepExistingImage] = useState(!!category?.image);
+
+  function setFile(file: File | null) {
+    if (!file) return;
+    if (fileInputRef.current) {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      fileInputRef.current.files = dt.files;
+    }
+    setPreview(URL.createObjectURL(file));
+    setKeepExistingImage(false);
+  }
+
+  function removeImage() {
+    setPreview(null);
+    setKeepExistingImage(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
   return (
     <form action={action} className="grid grid-cols-1 gap-4 md:grid-cols-2">
       <div className="flex flex-col gap-1.5">
@@ -68,10 +92,55 @@ export function CategoryForm({
           }}
         />
       </div>
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="image">URL ảnh</Label>
-        <Input id="image" name="image" defaultValue={category?.image ?? ""} />
+
+      <div className="flex flex-col gap-1.5 md:col-span-2">
+        <Label>Ảnh danh mục</Label>
+        {keepExistingImage && <input type="hidden" name="keepExistingImage" value="1" />}
+        {preview ? (
+          <div className="relative w-40">
+            <img src={preview} alt="" className="aspect-square w-40 rounded-xl border border-border object-cover" />
+            <button
+              type="button"
+              onClick={removeImage}
+              className="absolute -right-2 -top-2 flex size-6 items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow"
+              aria-label="Xoá ảnh"
+            >
+              <X className="size-3.5" />
+            </button>
+          </div>
+        ) : (
+          <label
+            htmlFor="imageFile"
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragOver(true);
+            }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragOver(false);
+              setFile(e.dataTransfer.files?.[0] ?? null);
+            }}
+            className={cn(
+              "flex w-40 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed px-3 py-8 text-center transition-colors",
+              dragOver ? "border-primary bg-primary/10" : "border-input bg-background/50 hover:border-primary hover:bg-primary/5"
+            )}
+          >
+            <ImagePlus className="size-6 text-muted-foreground" />
+            <span className="text-xs font-medium">Kéo thả hoặc bấm chọn ảnh</span>
+          </label>
+        )}
+        <Input
+          ref={fileInputRef}
+          id="imageFile"
+          name="imageFile"
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+        />
       </div>
+
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="sortOrder">Thứ tự hiển thị</Label>
         <Input id="sortOrder" name="sortOrder" type="number" defaultValue={category?.sortOrder ?? 0} />
@@ -82,7 +151,7 @@ export function CategoryForm({
           id="parentId"
           name="parentId"
           defaultValue={category?.parentId ?? ""}
-          className="h-9 rounded-lg border border-input bg-transparent px-2 text-sm outline-none focus-visible:border-ring"
+          className="h-9 rounded-lg border border-input bg-background px-2 text-sm text-foreground outline-none focus-visible:border-ring"
         >
           <option value="">— Không có (danh mục cấp 1) —</option>
           {parentOptions

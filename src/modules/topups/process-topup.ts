@@ -38,8 +38,14 @@ export async function processTopupWebhook(params: {
   topupCode: string;
   success: boolean;
   payload: unknown;
+  /** Số tiền thực nhận, nếu provider báo được (VD Casso đọc thẳng giao dịch
+   * ngân hàng). Không truyền = tin tưởng số tiền khai báo lúc tạo topup
+   * (đúng cho thẻ cào/gachthefast — mệnh giá thẻ cố định, không có rủi ro
+   * chuyển thiếu). Có truyền mà lệch số tiền khai báo -> đánh dấu
+   * WRONG_VALUE, KHÔNG tự cộng ví — admin xử lý tay. */
+  actualAmount?: bigint;
 }) {
-  const { provider, externalEventId, topupCode, success, payload } = params;
+  const { provider, externalEventId, topupCode, success, payload, actualAmount } = params;
 
   return prisma.$transaction(async (tx) => {
     try {
@@ -58,6 +64,14 @@ export async function processTopupWebhook(params: {
     if (!success) {
       await tx.topup.update({ where: { id: topup.id }, data: { status: "FAILED" } });
       return { alreadyProcessed: false, status: "FAILED" as const };
+    }
+
+    if (actualAmount !== undefined && actualAmount !== topup.amount) {
+      await tx.topup.update({
+        where: { id: topup.id },
+        data: { status: "WRONG_VALUE", meta: { ...(topup.meta as object), actualAmount: actualAmount.toString() } },
+      });
+      return { alreadyProcessed: false, status: "WRONG_VALUE" as const };
     }
 
     await tx.topup.update({

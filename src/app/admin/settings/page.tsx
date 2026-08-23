@@ -106,6 +106,63 @@ export default async function AdminSettingsPage() {
           </form>
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Chuyển khoản tự động cộng ví (Casso)</CardTitle>
+          <CardDescription>
+            Đăng ký free tại casso.vn → liên kết tài khoản ngân hàng → tạo Webhook mới (chọn kiểu V2), dán đúng
+            &quot;Đường dẫn nhận dữ liệu&quot; và &quot;Security Key&quot; bên dưới vào Casso.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form action={updatePaymentIntegrationSettingsAction} className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="bankAutoProvider">Dịch vụ</Label>
+              <select
+                id="bankAutoProvider"
+                name="bankAutoProvider"
+                defaultValue={integrations.bankAutoProvider}
+                className="h-9 rounded-lg border border-input bg-background px-2 text-sm text-foreground outline-none focus-visible:border-ring"
+              >
+                <option value="">— Chưa bật —</option>
+                <option value="casso">Casso.vn</option>
+              </select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="bankAutoApiKey">API Key Casso (không bắt buộc, chỉ cần nếu tự đối soát thêm)</Label>
+              <Input
+                id="bankAutoApiKey"
+                name="bankAutoApiKey"
+                type="password"
+                autoComplete="off"
+                placeholder={integrations.bankAutoApiKey ? "•••••••• (đã lưu, để trống = giữ nguyên)" : "Dán API Key"}
+              />
+            </div>
+
+            {integrations.bankAutoWebhookToken ? (
+              <div className="flex flex-col gap-2 rounded-lg bg-muted p-3 text-sm md:col-span-2">
+                <div>
+                  <span className="text-muted-foreground">Đường dẫn nhận dữ liệu (Webhook URL): </span>
+                  <code className="break-all">{(process.env.APP_URL || "https://<domain-cua-ban>") + "/api/webhooks/casso"}</code>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Security Key: </span>
+                  <code>{integrations.bankAutoWebhookToken}</code>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground md:col-span-2">
+                Chọn dịch vụ rồi bấm Lưu — hệ thống tự sinh Webhook URL + Security Key để bạn dán vào Casso.
+              </p>
+            )}
+
+            <div className="md:col-span-2">
+              <Button type="submit">Lưu</Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

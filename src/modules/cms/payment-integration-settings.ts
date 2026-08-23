@@ -3,11 +3,17 @@ import { prisma } from "@/lib/prisma";
 export interface PaymentIntegrationSettings {
   gachthefastApiKey: string;
   gachthefastPartnerId: string;
+  bankAutoProvider: "" | "casso" | "sepay";
+  bankAutoApiKey: string;
+  bankAutoWebhookToken: string;
 }
 
 const DEFAULTS: PaymentIntegrationSettings = {
   gachthefastApiKey: "",
   gachthefastPartnerId: "",
+  bankAutoProvider: "",
+  bankAutoApiKey: "",
+  bankAutoWebhookToken: "",
 };
 
 // ponytail: lưu ở key riêng "payment_integrations", KHÔNG chung với

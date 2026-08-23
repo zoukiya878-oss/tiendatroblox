@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { randomBytes } from "crypto";
 import { auth } from "@/lib/auth";
 import { getSiteSettings } from "@/modules/cms/site-settings";
 import { saveSiteSettings } from "@/modules/cms/admin-settings";
@@ -56,9 +57,18 @@ export async function updatePaymentIntegrationSettingsAction(formData: FormData)
   const before = await getPaymentIntegrationSettings();
 
   const apiKeyInput = String(formData.get("gachthefastApiKey") ?? "").trim();
+  const bankApiKeyInput = String(formData.get("bankAutoApiKey") ?? "").trim();
+  const bankAutoProvider = String(formData.get("bankAutoProvider") ?? "").trim() as "" | "casso" | "sepay";
+
   const next = {
     gachthefastApiKey: apiKeyInput || before.gachthefastApiKey,
     gachthefastPartnerId: String(formData.get("gachthefastPartnerId") ?? "").trim(),
+    bankAutoProvider,
+    bankAutoApiKey: bankApiKeyInput || before.bankAutoApiKey,
+    // Tự sinh 1 lần khi bật dịch vụ lần đầu, giữ nguyên các lần lưu sau.
+    bankAutoWebhookToken: bankAutoProvider && !before.bankAutoWebhookToken
+      ? randomBytes(16).toString("hex")
+      : before.bankAutoWebhookToken,
   };
 
   await savePaymentIntegrationSettings(next);

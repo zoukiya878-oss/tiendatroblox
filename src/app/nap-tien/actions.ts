@@ -3,8 +3,10 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { toBigIntVnd } from "@/lib/money";
-import { createTopup } from "@/modules/topups/process-topup";
+import { createTopup, processTopupWebhook } from "@/modules/topups/process-topup";
 import { prisma } from "@/lib/prisma";
+import { getPaymentIntegrationSettings } from "@/modules/cms/payment-integration-settings";
+import { chargeCard } from "@/providers/gachthefast/charging";
 
 export type TopupState = { error?: string };
 
@@ -60,6 +62,7 @@ export async function createCardTopupAction(_prev: TopupState, formData: FormDat
 
   const { topup } = await createTopup({ userId, provider: "CARD", amount });
 
+  const requestId = Date.now().toString();
   await prisma.topup.update({
     where: { id: topup.id },
     data: {
@@ -68,9 +71,52 @@ export async function createCardTopupAction(_prev: TopupState, formData: FormDat
         cardProvider,
         serial,
         cardCode,
+        gachthefastRequestId: requestId,
       },
     },
   });
+
+  const integration = await getPaymentIntegrationSettings();
+  if (integration.gachthefastApiKey && integration.gachthefastPartnerId) {
+    try {
+      const result = await chargeCard({
+        partnerId: integration.gachthefastPartnerId,
+        partnerKey: integration.gachthefastApiKey,
+        telco: cardProvider,
+        code: cardCode,
+        serial,
+        amount,
+        requestId,
+      });
+
+      // status: 1 = đúng thẻ, 2 = đúng thẻ sai mệnh giá (value = mệnh giá thật
+      // trên thẻ, dùng làm actualAmount để processTopupWebhook tự phát hiện
+      // lệch giá trị), 3/4/100 = lỗi/thẻ sai/bảo trì, 99 = đang chờ duyệt (kết
+      // quả cuối cùng sẽ tới qua callback ở /api/webhooks/gachthefast).
+      if (result.status === 1 || result.status === 2) {
+        await processTopupWebhook({
+          provider: "gachthefast",
+          externalEventId: `sync-${topup.topupCode}`,
+          topupCode: topup.topupCode,
+          success: true,
+          payload: result,
+          actualAmount: result.value ? BigInt(result.value) : undefined,
+        });
+      } else if (result.status === 3 || result.status === 4 || result.status === 100) {
+        await processTopupWebhook({
+          provider: "gachthefast",
+          externalEventId: `sync-${topup.topupCode}`,
+          topupCode: topup.topupCode,
+          success: false,
+          payload: result,
+        });
+      }
+      // status === 99: giữ nguyên PENDING, chờ callback.
+    } catch (err) {
+      console.error("[gachthefast] chargeCard failed", err);
+      // Lỗi gọi API (mạng, timeout...) — giữ PENDING, admin duyệt tay ở /admin/topups.
+    }
+  }
 
   redirect(`/nap-tien/ket-qua/${topup.topupCode}`);
 }

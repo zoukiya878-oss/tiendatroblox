@@ -1,37 +1,62 @@
 import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { getPaymentIntegrationSettings } from "@/modules/cms/payment-integration-settings";
 import { processTopupWebhook } from "@/modules/topups/process-topup";
+import { computeChargingSign } from "@/providers/gachthefast/charging";
 
-// ponytail: gachthefast.com's exact callback param names aren't confirmed yet
-// (no signature/HMAC documented for this provider — a shared `token` query
-// param on the registered callback URL is our only auth until real docs or a
-// live test hit shows the true field names). Logs every request raw so the
-// first real callback tells us exactly what to map. DO NOT credit wallets
-// from a field we're only guessing at — log and 200 back until confirmed.
-export async function GET(req: NextRequest) {
-  const params = Object.fromEntries(req.nextUrl.searchParams.entries());
-  console.log("[gachthefast webhook] GET", params);
+// gachthefast POST kết quả xử lý thẻ về đây sau khi admin duyệt (status=99
+// lúc gọi API ban đầu). callback_sign dùng cùng công thức với sign gửi đi:
+// md5(partnerKey+code+serial). requestId dùng để tìm lại topup vì mã đơn của
+// mình không được gửi kèm trong request ban đầu (chỉ có code/serial/amount).
+interface GachthefastCallback {
+  status: number;
+  message?: string;
+  value?: string;
+  amount?: string;
+  code: string;
+  serial: string;
+  request_id: string;
+  telco?: string;
+  callback_sign: string;
+  trans_id?: string;
+}
 
-  const expectedToken = process.env.GACHTHEFAST_WEBHOOK_TOKEN;
-  if (!expectedToken || params.token !== expectedToken) {
-    return NextResponse.json({ error: "invalid token" }, { status: 401 });
+export async function POST(req: NextRequest) {
+  const integration = await getPaymentIntegrationSettings();
+  if (!integration.gachthefastApiKey) {
+    return NextResponse.json({ error: "not configured" }, { status: 503 });
   }
 
-  const topupCode = params.orderId || params.order_id || params.ma_don_hang || params.code;
-  const success =
-    params.success === "true" || params.status === "1" || params.status === "success";
+  const body: GachthefastCallback | null = await req.json().catch(() => null);
+  if (!body?.code || !body.serial || !body.request_id) {
+    return NextResponse.json({ received: true, mapped: false });
+  }
 
-  if (!topupCode) {
-    console.warn("[gachthefast webhook] no recognizable order/topup code in params:", params);
+  const expectedSign = computeChargingSign(integration.gachthefastApiKey, body.code, body.serial);
+  if (body.callback_sign !== expectedSign) {
+    return NextResponse.json({ error: "invalid signature" }, { status: 401 });
+  }
+
+  const topup = await prisma.topup.findFirst({
+    where: { meta: { path: ["gachthefastRequestId"], equals: body.request_id } },
+  });
+  if (!topup) {
+    console.warn("[gachthefast webhook] no topup found for request_id:", body.request_id);
     return NextResponse.json({ received: true, mapped: false });
   }
 
   try {
+    // status 1 = đúng thẻ, 2 = đúng thẻ sai mệnh giá (value = mệnh giá thật,
+    // processTopupWebhook tự đối chiếu với topup.amount và đánh WRONG_VALUE
+    // nếu lệch), còn lại (3/4/100) = thất bại.
+    const success = body.status === 1 || body.status === 2;
     const result = await processTopupWebhook({
       provider: "gachthefast",
-      externalEventId: params.transId || params.transaction_id || `${topupCode}-${Date.now()}`,
-      topupCode,
+      externalEventId: body.trans_id || `${body.request_id}-cb`,
+      topupCode: topup.topupCode,
       success,
-      payload: params,
+      payload: body as unknown as object,
+      actualAmount: success && body.value ? BigInt(body.value) : undefined,
     });
     return NextResponse.json({ received: true, mapped: true, ...result });
   } catch (err) {

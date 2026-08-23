@@ -39,8 +39,24 @@ export function CardTopupForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="amount">Mệnh giá thẻ (đ)</Label>
-        <Input id="amount" name="amount" type="number" min={10000} step={1000} placeholder="Ví dụ: 50000" required />
+        <Label htmlFor="amount">Mệnh giá thẻ</Label>
+        <select
+          id="amount"
+          name="amount"
+          required
+          defaultValue=""
+          className="h-8 w-full rounded-lg border border-input bg-background px-2.5 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+        >
+          <option value="" disabled>
+            Chọn mệnh giá
+          </option>
+          <option value="10000">10.000đ</option>
+          <option value="20000">20.000đ</option>
+          <option value="50000">50.000đ</option>
+          <option value="100000">100.000đ</option>
+          <option value="200000">200.000đ</option>
+          <option value="500000">500.000đ</option>
+        </select>
       </div>
 
       <div className="flex flex-col gap-1.5">

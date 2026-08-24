@@ -24,6 +24,8 @@ export function Footer({ settings }: { settings: SiteSettings }) {
           <Link href="/blog" className="text-muted-foreground hover:text-foreground">Blog</Link>
           <Link href="/faq" className="text-muted-foreground hover:text-foreground">FAQ</Link>
           <Link href="/check-back" className="text-muted-foreground hover:text-foreground">Check Back</Link>
+          <Link href="/chinh-sach-bao-mat" className="text-muted-foreground hover:text-foreground">Chính sách quyền riêng tư</Link>
+          <Link href="/xoa-du-lieu" className="text-muted-foreground hover:text-foreground">Xóa dữ liệu</Link>
         </div>
 
         <div className="flex flex-col gap-2 text-sm">

@@ -84,13 +84,6 @@ export function ProductForm({
     if (url) setImages((prev) => [...prev, { url, alt: "", sortOrder: prev.length }]);
   }
 
-  function addField() {
-    setFields((prev) => [
-      ...prev,
-      { label: "", key: "", type: "TEXT", required: false, placeholder: "", options: "", sortOrder: prev.length },
-    ]);
-  }
-
   function addAccountPasswordFields() {
     setFields((prev) => [
       ...prev,
@@ -257,9 +250,6 @@ export function ProductForm({
             </Button>
             <Button type="button" variant="outline" size="sm" onClick={addAccountPasswordFields}>
               + Tài khoản/Mật khẩu
-            </Button>
-            <Button type="button" variant="outline" size="sm" onClick={addField}>
-              + Thêm trường
             </Button>
           </div>
         </div>

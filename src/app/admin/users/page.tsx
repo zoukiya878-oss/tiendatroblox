@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { formatVnd } from "@/lib/money";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { setUserWalletBalanceAction } from "./actions";
 import type { Prisma } from "@prisma/client";
 
 export default async function AdminUsersPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
@@ -16,7 +18,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
     where,
     orderBy: { createdAt: "desc" },
     take: 100,
-    select: { id: true, username: true, email: true, role: true, locked: true, createdAt: true },
+    select: { id: true, username: true, email: true, role: true, locked: true, createdAt: true, wallet: { select: { balance: true } } },
   });
 
   return (
@@ -34,6 +36,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
               <TableHead>Email</TableHead>
               <TableHead>Vai trò</TableHead>
               <TableHead>Trạng thái</TableHead>
+              <TableHead>Số dư</TableHead>
               <TableHead>Ngày tạo</TableHead>
               <TableHead>Hành động</TableHead>
             </TableRow>
@@ -46,6 +49,22 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
                 <TableCell>{u.role}</TableCell>
                 <TableCell>
                   <Badge variant={u.locked ? "destructive" : "default"}>{u.locked ? "Đã khoá" : "Hoạt động"}</Badge>
+                </TableCell>
+                <TableCell>
+                  <form action={setUserWalletBalanceAction.bind(null, u.id)} className="flex items-center gap-1.5">
+                    <Input
+                      name="balance"
+                      type="number"
+                      min={0}
+                      step={1000}
+                      defaultValue={(u.wallet?.balance ?? 0n).toString()}
+                      className="h-8 w-28 text-xs"
+                      title={formatVnd(u.wallet?.balance ?? 0n)}
+                    />
+                    <Button size="sm" variant="outline" type="submit" className="h-8 px-2 text-xs">
+                      Lưu
+                    </Button>
+                  </form>
                 </TableCell>
                 <TableCell className="text-xs text-muted-foreground">{u.createdAt.toLocaleDateString("vi-VN")}</TableCell>
                 <TableCell>

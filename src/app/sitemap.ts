@@ -1,6 +1,11 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 
+// Sản phẩm/danh mục/blog mới phải vào sitemap ngay, không được cache tĩnh
+// (Next.js 16 cache route này mặc định — đã từng bug thật: tạo sản phẩm mới
+// không hiện trong sitemap.xml dù DB đã có).
+export const revalidate = 0;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = process.env.APP_URL || "https://tiendatroblox.store";
 

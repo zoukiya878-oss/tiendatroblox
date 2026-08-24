@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth";
 import { saveCardDiscountRates, type CardDiscountRates, type CardTelco } from "@/modules/cms/card-discount-settings";
 import { writeAuditLog, auditJson } from "@/modules/audit/log";
 
-const TELCOS: CardTelco[] = ["VIETTEL", "VINAPHONE", "MOBIFONE"];
+const TELCOS: CardTelco[] = ["VIETTEL", "VINAPHONE", "MOBIFONE", "VNMOBILE", "GATE"];
 
 async function requireAdmin() {
   const session = await auth();

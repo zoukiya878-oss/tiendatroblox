@@ -35,6 +35,8 @@ export function CardTopupForm() {
           <option value="VIETTEL">Viettel</option>
           <option value="VINAPHONE">Vinaphone</option>
           <option value="MOBIFONE">Mobifone</option>
+          <option value="VNMOBILE">Vietnamobile</option>
+          <option value="GATE">Gate (Zing)</option>
         </select>
       </div>
 

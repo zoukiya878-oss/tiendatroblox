@@ -9,6 +9,8 @@ const TELCO_LABELS: Record<string, string> = {
   VIETTEL: "Viettel",
   VINAPHONE: "Vinaphone",
   MOBIFONE: "Mobifone",
+  VNMOBILE: "Vietnamobile",
+  GATE: "Gate (Zing)",
 };
 
 export default async function AdminCardDiscountsPage() {
@@ -28,7 +30,7 @@ export default async function AdminCardDiscountsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={updateCardDiscountRatesAction} className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <form action={updateCardDiscountRatesAction} className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {(Object.keys(TELCO_LABELS) as (keyof typeof TELCO_LABELS)[]).map((telco) => (
               <div key={telco} className="flex flex-col gap-1.5">
                 <Label htmlFor={telco}>{TELCO_LABELS[telco]} (%)</Label>
@@ -44,7 +46,7 @@ export default async function AdminCardDiscountsPage() {
                 />
               </div>
             ))}
-            <div className="sm:col-span-3">
+            <div className="col-span-2 sm:col-span-3 lg:col-span-5">
               <Button type="submit">Lưu chiết khấu</Button>
             </div>
           </form>

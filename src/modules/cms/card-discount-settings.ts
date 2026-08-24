@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 
-export type CardTelco = "VIETTEL" | "VINAPHONE" | "MOBIFONE";
+export type CardTelco = "VIETTEL" | "VINAPHONE" | "MOBIFONE" | "VNMOBILE" | "GATE";
 
 export type CardDiscountRates = Record<CardTelco, number>;
 
@@ -10,6 +10,8 @@ const DEFAULTS: CardDiscountRates = {
   VIETTEL: 100,
   VINAPHONE: 100,
   MOBIFONE: 100,
+  VNMOBILE: 100,
+  GATE: 100,
 };
 
 export async function getCardDiscountRates(): Promise<CardDiscountRates> {

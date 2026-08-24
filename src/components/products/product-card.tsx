@@ -5,8 +5,10 @@ import { formatVnd } from "@/lib/money";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { AddToCartButton } from "@/components/products/add-to-cart-button";
 
 interface ProductCardProps {
+  id: string;
   slug: string;
   name: string;
   price: bigint;
@@ -15,7 +17,7 @@ interface ProductCardProps {
   imageUrl?: string | null;
 }
 
-export function ProductCard({ slug, name, price, compareAtPrice, stock, imageUrl }: ProductCardProps) {
+export function ProductCard({ id, slug, name, price, compareAtPrice, stock, imageUrl }: ProductCardProps) {
   const discount =
     compareAtPrice && compareAtPrice > price
       ? Math.round((1 - Number(price) / Number(compareAtPrice)) * 100)
@@ -59,7 +61,8 @@ export function ProductCard({ slug, name, price, compareAtPrice, stock, imageUrl
           </div>
         </div>
       </Link>
-      <div className="px-3 pb-3 pt-2">
+      <div className="flex gap-2 px-3 pb-3 pt-2">
+        <AddToCartButton productId={id} disabled={stock <= 0} />
         <Button
           size="sm"
           nativeButton={false}

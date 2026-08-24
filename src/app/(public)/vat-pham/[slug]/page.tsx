@@ -101,6 +101,7 @@ export default async function ProductDetailPage({
             {related.map((p) => (
               <ProductCard
                 key={p.id}
+                id={p.id}
                 slug={p.slug}
                 name={p.name}
                 price={p.price}

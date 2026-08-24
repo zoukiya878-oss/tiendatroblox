@@ -140,6 +140,7 @@ export default async function ProductListPage({
           {items.map((p) => (
             <ProductCard
               key={p.id}
+              id={p.id}
               slug={p.slug}
               name={p.name}
               price={p.price}

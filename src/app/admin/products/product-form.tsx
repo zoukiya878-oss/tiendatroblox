@@ -99,6 +99,13 @@ export function ProductForm({
     ]);
   }
 
+  function addIngameUsernameField() {
+    setFields((prev) => [
+      ...prev,
+      { label: "Tên nhân vật Roblox (Username)", key: "username-ingame", type: "TEXT", required: true, placeholder: "Nhập username Roblox", options: "", sortOrder: prev.length },
+    ]);
+  }
+
   return (
     <form action={action} className="flex flex-col gap-6">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -244,7 +251,10 @@ export function ProductForm({
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <Label>Trường thông tin động (Product Fields)</Label>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" variant="outline" size="sm" onClick={addIngameUsernameField}>
+              + Username Ingame
+            </Button>
             <Button type="button" variant="outline" size="sm" onClick={addAccountPasswordFields}>
               + Tài khoản/Mật khẩu
             </Button>

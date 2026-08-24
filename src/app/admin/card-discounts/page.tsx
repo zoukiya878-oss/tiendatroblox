@@ -9,8 +9,8 @@ const TELCO_LABELS: Record<string, string> = {
   VIETTEL: "Viettel",
   VINAPHONE: "Vinaphone",
   MOBIFONE: "Mobifone",
-  VNMOBILE: "Vietnamobile",
-  GATE: "Gate (Zing)",
+  GATE: "Gate",
+  ZING: "Zing",
 };
 
 export default async function AdminCardDiscountsPage() {

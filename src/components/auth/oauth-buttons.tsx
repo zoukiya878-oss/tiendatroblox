@@ -2,6 +2,7 @@
 
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
+import { GoogleIcon, FacebookIcon } from "@/components/icons/brand-icons";
 
 export function OAuthButtons({ callbackUrl }: { callbackUrl: string }) {
   return (
@@ -11,10 +12,15 @@ export function OAuthButtons({ callbackUrl }: { callbackUrl: string }) {
         <div className="absolute inset-x-0 top-1/2 border-t border-border" />
       </div>
       <Button type="button" variant="outline" className="w-full" onClick={() => signIn("google", { callbackUrl })}>
-        Tiếp tục với Google
+        <GoogleIcon className="size-4" /> Tiếp tục với Google
       </Button>
-      <Button type="button" variant="outline" className="w-full" onClick={() => signIn("facebook", { callbackUrl })}>
-        Tiếp tục với Facebook
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full text-[#1877F2] hover:text-[#1877F2]"
+        onClick={() => signIn("facebook", { callbackUrl })}
+      >
+        <FacebookIcon className="size-4" /> Tiếp tục với Facebook
       </Button>
     </div>
   );

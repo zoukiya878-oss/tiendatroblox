@@ -1,6 +1,19 @@
 import { prisma } from "@/lib/prisma";
 import type { DeliveryType, ProductFieldType } from "@prisma/client";
 
+// ponytail: bảo hiểm server-side — client (product-form.tsx) đã tự slugify,
+// nhưng nếu có đường nhập liệu khác (import hàng loạt, API) bỏ qua bước đó,
+// slug thô (có dấu cách/dấu tiếng Việt) sẽ vỡ route /vat-pham/[slug].
+function slugify(text: string) {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
 export interface ProductImageInput {
   url: string;
   alt?: string;
@@ -41,7 +54,7 @@ export async function createProduct(input: ProductInput) {
   return prisma.product.create({
     data: {
       name: input.name,
-      slug: input.slug,
+      slug: slugify(input.slug),
       code: input.code,
       categoryId: input.categoryId,
       price: input.price,
@@ -70,7 +83,7 @@ export async function updateProduct(id: string, input: ProductInput) {
       where: { id },
       data: {
         name: input.name,
-        slug: input.slug,
+        slug: slugify(input.slug),
         code: input.code,
         categoryId: input.categoryId,
         price: input.price,

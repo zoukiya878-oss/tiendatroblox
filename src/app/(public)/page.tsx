@@ -45,10 +45,10 @@ export default async function HomePage() {
             unoptimized
             width={500}
             height={229}
-            className="pointer-events-none absolute top-1/2 right-4 hidden w-[34rem] -translate-y-1/2 rounded-2xl object-contain opacity-90 drop-shadow-2xl lg:block xl:w-[40rem]"
+            className="pointer-events-none absolute top-1/2 right-6 hidden w-[30rem] -translate-y-1/2 rounded-2xl object-contain opacity-90 drop-shadow-2xl xl:block"
           />
 
-          <div className="relative flex flex-col gap-6 lg:max-w-xl">
+          <div className="relative flex flex-col gap-6 lg:max-w-xl xl:max-w-md">
             <span className="w-fit rounded-full border border-accent/40 bg-accent/10 px-4 py-1.5 text-xs font-bold tracking-widest text-accent uppercase">
               Shop game giá rẻ
             </span>

@@ -21,6 +21,7 @@ import {
   Settings,
   Landmark,
   ScrollText,
+  Percent,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -31,6 +32,7 @@ const NAV_ITEMS = [
   { href: "/admin/users", label: "Người dùng", icon: Users },
   { href: "/admin/wallets", label: "Ví", icon: Wallet },
   { href: "/admin/topups", label: "Nạp tiền", icon: CreditCard },
+  { href: "/admin/card-discounts", label: "Chiết khấu thẻ cào", icon: Percent },
   { href: "/admin/coupons", label: "Mã giảm giá", icon: Ticket },
   { href: "/admin/blog", label: "Blog", icon: Newspaper },
   { href: "/admin/faqs", label: "FAQ", icon: HelpCircle },

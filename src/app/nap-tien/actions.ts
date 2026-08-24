@@ -6,6 +6,7 @@ import { toBigIntVnd } from "@/lib/money";
 import { createTopup, processTopupWebhook } from "@/modules/topups/process-topup";
 import { prisma } from "@/lib/prisma";
 import { getPaymentIntegrationSettings } from "@/modules/cms/payment-integration-settings";
+import { getCardDiscountRates, type CardTelco } from "@/modules/cms/card-discount-settings";
 import { chargeCard } from "@/providers/gachthefast/charging";
 
 export type TopupState = { error?: string };
@@ -62,10 +63,17 @@ export async function createCardTopupAction(_prev: TopupState, formData: FormDat
 
   const { topup } = await createTopup({ userId, provider: "CARD", amount });
 
+  const discountRates = await getCardDiscountRates();
+  const rate = discountRates[cardProvider as CardTelco] ?? 100;
+  const netAmount = (amount * BigInt(Math.round(rate * 100))) / 10000n;
+  const fee = amount - netAmount;
+
   const requestId = Date.now().toString();
   await prisma.topup.update({
     where: { id: topup.id },
     data: {
+      fee,
+      netAmount,
       meta: {
         ...(topup.meta as Record<string, string> | null),
         cardProvider,

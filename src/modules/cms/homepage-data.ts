@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { maskUsername } from "@/lib/money";
+import { vnMonthStart } from "@/lib/vn-date";
 
 export async function getRecentTopups(limit = 10) {
   const rows = await prisma.topup.findMany({
@@ -37,8 +38,7 @@ export async function getRecentPurchases(limit = 10) {
 }
 
 export async function getMonthlyLeaderboard(limit = 10) {
-  const now = new Date();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthStart = vnMonthStart(new Date());
 
   const grouped = await prisma.topup.groupBy({
     by: ["userId"],

@@ -1,12 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import { formatVnd } from "@/lib/money";
+import { vnDayBoundary, vnMonthStart, vnDayLabel } from "@/lib/vn-date";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 function startOfDay(d: Date) {
-  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  return vnDayBoundary(d);
 }
 function startOfMonth(d: Date) {
-  return new Date(d.getFullYear(), d.getMonth(), 1);
+  return vnMonthStart(d);
 }
 
 async function getStats() {
@@ -51,13 +52,13 @@ async function getLast7DaysRevenue() {
   const now = new Date();
   const days: { label: string; total: bigint }[] = [];
   for (let i = 6; i >= 0; i--) {
-    const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
-    const nextDay = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1);
+    const day = vnDayBoundary(now, -i);
+    const nextDay = vnDayBoundary(now, -i + 1);
     const agg = await prisma.order.aggregate({
       _sum: { total: true },
       where: { status: { in: ["PAID", "COMPLETED"] }, createdAt: { gte: day, lt: nextDay } },
     });
-    days.push({ label: `${day.getDate()}/${day.getMonth() + 1}`, total: agg._sum.total ?? 0n });
+    days.push({ label: vnDayLabel(day), total: agg._sum.total ?? 0n });
   }
   return days;
 }
@@ -67,7 +68,7 @@ function BarChart({ data }: { data: { label: string; total: bigint }[] }) {
   return (
     <div className="flex h-40 items-end gap-2">
       {data.map((d) => (
-        <div key={d.label} className="flex flex-1 flex-col items-center gap-1">
+        <div key={d.label} className="flex h-full flex-1 flex-col items-center justify-end gap-1">
           <div
             className="w-full rounded-t bg-primary"
             style={{ height: `${Math.max(2, (Number(d.total) / max) * 100)}%` }}

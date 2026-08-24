@@ -14,12 +14,7 @@ export function OAuthButtons({ callbackUrl }: { callbackUrl: string }) {
       <Button type="button" variant="outline" className="w-full" onClick={() => signIn("google", { callbackUrl })}>
         <GoogleIcon className="size-4" /> Tiếp tục với Google
       </Button>
-      <Button
-        type="button"
-        variant="outline"
-        className="w-full text-[#1877F2] hover:text-[#1877F2]"
-        onClick={() => signIn("facebook", { callbackUrl })}
-      >
+      <Button type="button" variant="outline" className="w-full" disabled title="Đang tạm khóa, sẽ mở lại sau">
         <FacebookIcon className="size-4" /> Tiếp tục với Facebook
       </Button>
     </div>

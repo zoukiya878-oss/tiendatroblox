@@ -5,6 +5,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { processTopupWebhook } from "@/modules/topups/process-topup";
 import { writeAuditLog, auditJson } from "@/modules/audit/log";
+import { checkCardStatus } from "@/providers/gachthefast/charging";
+import { getPaymentIntegrationSettings } from "@/modules/cms/payment-integration-settings";
 
 async function requireAdmin() {
   const session = await auth();
@@ -37,6 +39,61 @@ export async function simulateTopupAction(topupCode: string, success: boolean) {
     entityType: "Topup",
     entityId: topupCode,
     afterData: auditJson(result),
+  });
+
+  revalidatePath("/admin/topups");
+}
+
+// Chủ động hỏi trạng thái thẻ (command=check) thay vì ngồi chờ callback —
+// dùng khi callback gachthefast lỗi hạ tầng hoặc đơn kẹt PENDING lâu.
+export async function checkCardStatusAction(topupCode: string) {
+  const actorUserId = await requireAdmin();
+
+  const topup = await prisma.topup.findUnique({ where: { topupCode } });
+  if (!topup || topup.provider !== "CARD") {
+    throw new Error("Chỉ áp dụng cho nạp thẻ cào");
+  }
+  if (topup.status !== "PENDING") return;
+
+  const meta = topup.meta as Record<string, string> | null;
+  if (!meta?.cardCode || !meta.serial || !meta.cardProvider || !meta.gachthefastRequestId) {
+    throw new Error("Đơn thiếu dữ liệu thẻ, không check được");
+  }
+
+  const integration = await getPaymentIntegrationSettings();
+  if (!integration.gachthefastApiKey || !integration.gachthefastPartnerId) {
+    throw new Error("Chưa cấu hình gachthefast");
+  }
+
+  const result = await checkCardStatus({
+    partnerId: integration.gachthefastPartnerId,
+    partnerKey: integration.gachthefastApiKey,
+    telco: meta.cardProvider,
+    code: meta.cardCode,
+    serial: meta.serial,
+    amount: topup.amount,
+    requestId: meta.gachthefastRequestId,
+  });
+
+  // status 99 = vẫn đang chờ, chưa có gì để cập nhật.
+  if (result.status === 99) return;
+
+  const success = result.status === 1 || result.status === 2;
+  const webhookResult = await processTopupWebhook({
+    provider: "gachthefast",
+    externalEventId: `check-${topupCode}-${Date.now()}`,
+    topupCode,
+    success,
+    payload: result,
+    actualAmount: success && result.value ? BigInt(result.value) : undefined,
+  });
+
+  await writeAuditLog({
+    actorUserId,
+    action: success ? "TOPUP_APPROVE" : "TOPUP_REJECT",
+    entityType: "Topup",
+    entityId: topupCode,
+    afterData: auditJson({ checkResult: result, webhookResult }),
   });
 
   revalidatePath("/admin/topups");

@@ -3,7 +3,7 @@ import { formatVnd } from "@/lib/money";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { simulateTopupAction, manualApproveTopupAction } from "./actions";
+import { simulateTopupAction, manualApproveTopupAction, checkCardStatusAction } from "./actions";
 import { ProviderIcon } from "@/components/payment/provider-icon";
 
 export default async function AdminTopupsPage() {
@@ -67,6 +67,11 @@ export default async function AdminTopupsPage() {
                     <div className="flex flex-wrap gap-1">
                       {t.provider === "CARD" && (
                         <>
+                          <form action={checkCardStatusAction.bind(null, t.topupCode)}>
+                            <Button size="sm" variant="secondary" type="submit">
+                              Check ngay
+                            </Button>
+                          </form>
                           <form action={manualApproveTopupAction.bind(null, t.topupCode, true)}>
                             <Button size="sm" type="submit">
                               Duyệt tay

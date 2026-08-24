@@ -28,7 +28,7 @@ export function computeChargingSign(partnerKey: string, code: string, serial: st
   return createHash("md5").update(partnerKey + code + serial).digest("hex");
 }
 
-export async function chargeCard(params: ChargeCardParams): Promise<ChargeCardResult> {
+function buildUrl(params: ChargeCardParams, command: "charging" | "check"): URL {
   const sign = computeChargingSign(params.partnerKey, params.code, params.serial);
   const url = new URL(BASE_URL);
   url.searchParams.set("partner_id", params.partnerId);
@@ -38,8 +38,18 @@ export async function chargeCard(params: ChargeCardParams): Promise<ChargeCardRe
   url.searchParams.set("amount", params.amount.toString());
   url.searchParams.set("request_id", params.requestId);
   url.searchParams.set("sign", sign);
-  url.searchParams.set("command", "charging");
+  url.searchParams.set("command", command);
+  return url;
+}
 
-  const res = await fetch(url, { method: "GET" });
+export async function chargeCard(params: ChargeCardParams): Promise<ChargeCardResult> {
+  const res = await fetch(buildUrl(params, "charging"), { method: "GET" });
+  return res.json();
+}
+
+// command=check — hỏi lại trạng thái 1 thẻ đã gửi trước đó, không xử lý lại
+// (khác với gọi lại command=charging, chỉ báo chung "đã gửi trước").
+export async function checkCardStatus(params: ChargeCardParams): Promise<ChargeCardResult> {
+  const res = await fetch(buildUrl(params, "check"), { method: "GET" });
   return res.json();
 }

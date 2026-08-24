@@ -67,7 +67,7 @@ export function ProductCard({ id, slug, name, price, compareAtPrice, stock, imag
           size="sm"
           nativeButton={false}
           render={<Link href={`/vat-pham/${slug}`} />}
-          className="w-full bg-purple-600 text-white hover:bg-purple-700"
+          className="min-w-0 flex-1 bg-purple-600 text-white hover:bg-purple-700"
         >
           Mua ngay
         </Button>

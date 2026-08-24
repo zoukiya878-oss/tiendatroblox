@@ -24,13 +24,14 @@ export function AddToCartButton({ productId, disabled }: { productId: string; di
 
   return (
     <Button
-      size="sm"
+      size="icon"
       variant="outline"
+      aria-label="Thêm vào giỏ hàng"
       onClick={onClick}
       disabled={disabled || isPending}
-      className="w-full"
+      className="shrink-0"
     >
-      <ShoppingCart /> Thêm giỏ
+      <ShoppingCart className="size-4" />
     </Button>
   );
 }

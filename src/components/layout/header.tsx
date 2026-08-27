@@ -165,7 +165,7 @@ export async function Header({ settings }: { settings: SiteSettings }) {
                 </DropdownMenu>
               </>
             ) : (
-              <div className="hidden items-center gap-2 sm:flex">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <Button variant="ghost" size="sm" nativeButton={false} render={<Link href="/dang-nhap" />}>
                   Đăng nhập
                 </Button>

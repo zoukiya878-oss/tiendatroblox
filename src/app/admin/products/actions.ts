@@ -25,6 +25,18 @@ async function requireAdmin() {
   return session.user.id as string;
 }
 
+// ponytail: server-side guard — custom field key phải là slug an toàn (khách
+// nhập field theo key này lúc mua), tránh key có dấu/khoảng trắng do gõ tay.
+function slugifyKey(text: string) {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
 function revalidateProductPages(slug?: string) {
   revalidatePath("/vat-pham");
   if (slug) revalidatePath(`/vat-pham/${slug}`);
@@ -67,6 +79,7 @@ async function buildProductInput(formData: FormData): Promise<ProductInput> {
     fieldsParsed = [];
   }
   const fields = fieldsParsed
+    .map((f) => ({ ...f, key: slugifyKey(f.key || f.label) }))
     .filter((f) => f.label && f.key)
     .map((f, idx) => ({
       label: f.label,

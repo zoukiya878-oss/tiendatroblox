@@ -92,6 +92,13 @@ export function ProductForm({
     ]);
   }
 
+  function addCustomField() {
+    setFields((prev) => [
+      ...prev,
+      { label: "", key: "", type: "TEXT", required: true, placeholder: "", options: "", sortOrder: prev.length },
+    ]);
+  }
+
   function addIngameUsernameField() {
     setFields((prev) => [
       ...prev,
@@ -250,6 +257,9 @@ export function ProductForm({
             </Button>
             <Button type="button" variant="outline" size="sm" onClick={addAccountPasswordFields}>
               + Tài khoản/Mật khẩu
+            </Button>
+            <Button type="button" variant="outline" size="sm" onClick={addCustomField}>
+              + Trường tùy chỉnh
             </Button>
           </div>
         </div>

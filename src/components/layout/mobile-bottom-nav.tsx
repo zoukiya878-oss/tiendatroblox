@@ -84,13 +84,23 @@ export function MobileBottomNav({
             <span className="text-[11px] font-medium">Liên hệ</span>
           </Link>
 
-          <Link
-            href="/tai-khoan/don-hang"
-            className="flex flex-1 flex-col items-center gap-0.5 py-1 text-muted-foreground"
-          >
-            <ListChecks className="size-5" />
-            <span className="text-[11px] font-medium">Đơn hàng</span>
-          </Link>
+          {user ? (
+            <Link
+              href="/tai-khoan/don-hang"
+              className="flex flex-1 flex-col items-center gap-0.5 py-1 text-muted-foreground"
+            >
+              <ListChecks className="size-5" />
+              <span className="text-[11px] font-medium">Đơn hàng</span>
+            </Link>
+          ) : (
+            <Link
+              href="/dang-nhap"
+              className="flex flex-1 flex-col items-center gap-0.5 py-1 text-muted-foreground"
+            >
+              <User className="size-5" />
+              <span className="text-[11px] font-medium">Đăng nhập</span>
+            </Link>
+          )}
         </div>
       </nav>
 

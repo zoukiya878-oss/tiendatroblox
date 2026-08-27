@@ -22,11 +22,13 @@ import {
   Landmark,
   ScrollText,
   Percent,
+  Gamepad2,
 } from "lucide-react";
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/products", label: "Sản phẩm", icon: Package },
+  { href: "/admin/cay-thue", label: "Dịch vụ cày thuê", icon: Gamepad2 },
   { href: "/admin/categories", label: "Danh mục", icon: FolderTree },
   { href: "/admin/orders", label: "Đơn hàng", icon: ShoppingCart },
   { href: "/admin/users", label: "Người dùng", icon: Users },

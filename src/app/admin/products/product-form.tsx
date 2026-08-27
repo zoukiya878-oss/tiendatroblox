@@ -45,10 +45,12 @@ export function ProductForm({
   action,
   categories,
   product,
+  cayThueServices = [],
 }: {
   action: (formData: FormData) => void;
   categories: { id: string; name: string }[];
   product?: Product & { images: ProductImage[]; fields: ProductField[] };
+  cayThueServices?: string[];
 }) {
   const [name, setName] = useState(product?.name ?? "");
   const [slug, setSlug] = useState(product?.slug ?? "");
@@ -89,6 +91,25 @@ export function ProductForm({
       ...prev,
       { label: "Tài khoản", key: "tai-khoan", type: "TEXT", required: true, placeholder: "Nhập tài khoản", options: "", sortOrder: prev.length },
       { label: "Mật khẩu", key: "mat-khau", type: "TEXT", required: true, placeholder: "Nhập mật khẩu", options: "", sortOrder: prev.length + 1 },
+    ]);
+  }
+
+  function addCayThueDropdown() {
+    if (cayThueServices.length === 0) {
+      alert("Chưa có dịch vụ cày thuê nào. Thêm ở trang Admin → Dịch vụ cày thuê trước.");
+      return;
+    }
+    setFields((prev) => [
+      ...prev,
+      {
+        label: "Chọn dịch vụ cày thuê",
+        key: "dich-vu-cay-thue",
+        type: "SELECT",
+        required: true,
+        placeholder: "",
+        options: cayThueServices.join(","),
+        sortOrder: prev.length,
+      },
     ]);
   }
 
@@ -257,6 +278,9 @@ export function ProductForm({
             </Button>
             <Button type="button" variant="outline" size="sm" onClick={addAccountPasswordFields}>
               + Tài khoản/Mật khẩu
+            </Button>
+            <Button type="button" variant="outline" size="sm" onClick={addCayThueDropdown}>
+              + Dropdown dịch vụ cày thuê
             </Button>
             <Button type="button" variant="outline" size="sm" onClick={addCustomField}>
               + Trường tùy chỉnh

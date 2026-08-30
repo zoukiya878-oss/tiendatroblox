@@ -110,6 +110,8 @@ async function buildProductInput(formData: FormData): Promise<ProductInput> {
     active: formData.get("active") === "on",
     seoTitle: String(formData.get("seoTitle") ?? "").trim() || undefined,
     seoDescription: String(formData.get("seoDescription") ?? "").trim() || undefined,
+    accountUsername: String(formData.get("accountUsername") ?? "").trim() || undefined,
+    accountPassword: String(formData.get("accountPassword") ?? "").trim() || undefined,
     images,
     fields,
   };

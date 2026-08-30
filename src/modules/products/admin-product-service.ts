@@ -46,6 +46,8 @@ export interface ProductInput {
   active: boolean;
   seoTitle?: string;
   seoDescription?: string;
+  accountUsername?: string;
+  accountPassword?: string;
   images: ProductImageInput[];
   fields: ProductFieldInput[];
 }
@@ -68,6 +70,8 @@ export async function createProduct(input: ProductInput) {
       active: input.active,
       seoTitle: input.seoTitle || null,
       seoDescription: input.seoDescription || null,
+      accountUsername: input.accountUsername || null,
+      accountPassword: input.accountPassword || null,
       images: { create: input.images },
       fields: { create: input.fields },
     },

@@ -3,11 +3,29 @@ import { prisma } from "@/lib/prisma";
 import { formatVnd } from "@/lib/money";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import type { Prisma } from "@prisma/client";
 import { duplicateProductAction, toggleProductActiveAction } from "./actions";
 
-export default async function AdminProductsPage() {
+export default async function AdminProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const { q } = await searchParams;
+  const where: Prisma.ProductWhereInput = q
+    ? {
+        OR: [
+          { name: { contains: q, mode: "insensitive" } },
+          { code: { contains: q, mode: "insensitive" } },
+          { accountUsername: { contains: q, mode: "insensitive" } },
+        ],
+      }
+    : {};
+
   const products = await prisma.product.findMany({
+    where,
     orderBy: { createdAt: "desc" },
     include: { category: true, images: { orderBy: { sortOrder: "asc" }, take: 1 } },
   });
@@ -18,6 +36,10 @@ export default async function AdminProductsPage() {
         <h1 className="font-heading text-2xl font-semibold">Sản phẩm</h1>
         <Button render={<Link href="/admin/products/new" />}>+ Thêm sản phẩm</Button>
       </div>
+      <form className="flex gap-2">
+        <Input name="q" defaultValue={q} placeholder="Tìm theo tên, code, tài khoản" className="w-72" />
+        <Button type="submit" variant="outline">Tìm</Button>
+      </form>
       <div className="overflow-x-auto rounded-xl bg-card ring-1 ring-foreground/10">
         <Table>
           <TableHeader>
@@ -52,7 +74,11 @@ export default async function AdminProductsPage() {
                 <TableCell>{p.stock}</TableCell>
                 <TableCell>{p.soldCount}</TableCell>
                 <TableCell>
-                  <Badge variant={p.active ? "default" : "secondary"}>{p.active ? "Đang bán" : "Đã ẩn"}</Badge>
+                  {p.soldAt ? (
+                    <Badge variant="secondary">Đã bán</Badge>
+                  ) : (
+                    <Badge variant={p.active ? "default" : "secondary"}>{p.active ? "Đang bán" : "Đã ẩn"}</Badge>
+                  )}
                 </TableCell>
                 <TableCell className="text-xs text-muted-foreground">{p.createdAt.toLocaleDateString("vi-VN")}</TableCell>
                 <TableCell>

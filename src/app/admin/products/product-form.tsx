@@ -341,6 +341,24 @@ export function ProductForm({
         ))}
       </div>
 
+      <div className="flex flex-col gap-2 rounded-lg border border-border p-3">
+        <Label>Bán tài khoản (tùy chọn)</Label>
+        <p className="text-xs text-muted-foreground">
+          Điền tài khoản/mật khẩu của acc cần bán. Khách thanh toán xong sẽ thấy thông tin này trong đơn hàng,
+          sản phẩm tự ẩn khỏi web (vẫn còn trong admin ở trạng thái đã bán). Đặt Tồn kho = 1.
+        </p>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="accountUsername">Tài khoản</Label>
+            <Input id="accountUsername" name="accountUsername" defaultValue={product?.accountUsername ?? ""} autoComplete="off" />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="accountPassword">Mật khẩu</Label>
+            <Input id="accountPassword" name="accountPassword" defaultValue={product?.accountPassword ?? ""} autoComplete="off" />
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="seoTitle">SEO Title</Label>

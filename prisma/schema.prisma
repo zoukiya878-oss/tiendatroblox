@@ -130,6 +130,12 @@ model Product {
   stock             Int      @default(0)
   soldCount          Int      @default(0)
 
+  // "Bán tài khoản": sản phẩm là 1 acc cụ thể. Có accountUsername => là account product.
+  // Bán xong: giao credentials vào OrderItemField, tự set active=false + soldAt.
+  accountUsername   String?
+  accountPassword   String?
+  soldAt            DateTime?
+
   categoryId        String
   category          Category @relation(fields: [categoryId], references: [id])
 

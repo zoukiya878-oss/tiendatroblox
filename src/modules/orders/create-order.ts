@@ -53,6 +53,11 @@ export async function createOrder(input: CheckoutInput) {
       }
       if (item.quantity <= 0) throw new ValidationFailedError("Số lượng không hợp lệ");
 
+      const isAccountProduct = !!product.accountUsername;
+      if (isAccountProduct && item.quantity !== 1) {
+        throw new ValidationFailedError("Sản phẩm tài khoản chỉ mua được 1");
+      }
+
       for (const field of product.fields) {
         if (field.required) {
           const value = item.customFields?.[field.key];
@@ -71,6 +76,24 @@ export async function createOrder(input: CheckoutInput) {
       const lineSubtotal = product.price * BigInt(item.quantity);
       subtotal += lineSubtotal;
 
+      const fieldSnapshots = product.fields.map((f) => ({
+        fieldKey: f.key,
+        fieldLabel: f.label,
+        value: item.customFields?.[f.key] ?? "",
+      }));
+      if (isAccountProduct) {
+        // Giao credentials của acc vào đơn — hiển thị luôn ở trang đơn hàng đã mua.
+        fieldSnapshots.push(
+          { fieldKey: "account_username", fieldLabel: "Tài khoản", value: product.accountUsername ?? "" },
+          { fieldKey: "account_password", fieldLabel: "Mật khẩu", value: product.accountPassword ?? "" },
+        );
+        // Ẩn khỏi web, giữ lại trong admin ở trạng thái đã bán.
+        await tx.product.update({
+          where: { id: product.id },
+          data: { active: false, soldAt: new Date() },
+        });
+      }
+
       itemSnapshots.push({
         productId: product.id,
         productCode: product.code,
@@ -78,11 +101,7 @@ export async function createOrder(input: CheckoutInput) {
         unitPrice: product.price,
         quantity: item.quantity,
         subtotal: lineSubtotal,
-        fields: product.fields.map((f) => ({
-          fieldKey: f.key,
-          fieldLabel: f.label,
-          value: item.customFields?.[f.key] ?? "",
-        })),
+        fields: fieldSnapshots,
       });
     }
 

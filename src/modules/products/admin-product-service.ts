@@ -101,6 +101,8 @@ export async function updateProduct(id: string, input: ProductInput) {
         active: input.active,
         seoTitle: input.seoTitle || null,
         seoDescription: input.seoDescription || null,
+        accountUsername: input.accountUsername || null,
+        accountPassword: input.accountPassword || null,
         images: { create: input.images },
         fields: { create: input.fields },
       },

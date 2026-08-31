@@ -15,8 +15,8 @@ export default async function AdminCayThuePage() {
           <CardTitle>Danh sách dịch vụ</CardTitle>
           <CardDescription>
             Mỗi dòng là 1 lựa chọn cày thuê. Trong form sản phẩm, bấm nút &quot;+ Dropdown dịch vụ cày thuê&quot; để
-            gắn danh sách này vào sản phẩm — khách sẽ thấy dropdown chọn dịch vụ khi mua. Sửa danh sách ở đây chỉ áp
-            dụng cho sản phẩm gắn dropdown <em>sau khi lưu</em>, không tự cập nhật sản phẩm cũ.
+            gắn dropdown vào sản phẩm — khách sẽ thấy dropdown chọn dịch vụ khi mua. Dropdown đọc trực tiếp danh sách
+            này, sửa ở đây là mọi sản phẩm có dropdown cập nhật theo ngay.
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -17,14 +17,19 @@ interface FormValues {
   [key: string]: string | number;
 }
 
+// Field key cố định do nút "+ Dropdown dịch vụ cày thuê" trong form admin sinh ra.
+const CAY_THUE_FIELD_KEY = "dich-vu-cay-thue";
+
 export function ProductPurchaseForm({
   productId,
   fields,
   outOfStock,
+  cayThueServices,
 }: {
   productId: string;
   fields: ProductField[];
   outOfStock: boolean;
+  cayThueServices?: string[];
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -91,7 +96,10 @@ export function ProductPurchaseForm({
               {...register(f.key, { required: f.required && `Vui lòng chọn ${f.label}` })}
             >
               <option value="">-- Chọn --</option>
-              {(f.options ?? "").split(",").filter(Boolean).map((opt) => (
+              {(f.key === CAY_THUE_FIELD_KEY && cayThueServices && cayThueServices.length > 0
+                ? cayThueServices
+                : (f.options ?? "").split(",").filter(Boolean)
+              ).map((opt) => (
                 <option key={opt} value={opt.trim()}>
                   {opt.trim()}
                 </option>

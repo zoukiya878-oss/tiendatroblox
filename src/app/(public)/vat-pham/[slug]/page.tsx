@@ -3,6 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ChevronRight, PackageX } from "lucide-react";
 import { getProductBySlug, getRelatedProducts } from "@/modules/products/get-product";
+import { getCayThueServices } from "@/modules/cms/cay-thue-settings";
 import { formatVnd } from "@/lib/money";
 import { Badge } from "@/components/ui/badge";
 import { ProductCard } from "@/components/products/product-card";
@@ -18,6 +19,9 @@ export default async function ProductDetailPage({
   if (!product) notFound();
 
   const related = await getRelatedProducts(product.categoryId, product.id, 4);
+  // Dropdown cày thuê đọc trực tiếp từ /admin/cay-thue (không dùng options snapshot cũ).
+  const hasCayThueField = product.fields.some((f) => f.key === "dich-vu-cay-thue");
+  const cayThueServices = hasCayThueField ? await getCayThueServices() : undefined;
   const discount =
     product.compareAtPrice && product.compareAtPrice > product.price
       ? Math.round((1 - Number(product.price) / Number(product.compareAtPrice)) * 100)
@@ -84,7 +88,12 @@ export default async function ProductDetailPage({
             <p className="text-sm text-muted-foreground">{product.shortDescription}</p>
           )}
 
-          <ProductPurchaseForm productId={product.id} fields={product.fields} outOfStock={product.stock <= 0} />
+          <ProductPurchaseForm
+            productId={product.id}
+            fields={product.fields}
+            outOfStock={product.stock <= 0}
+            cayThueServices={cayThueServices}
+          />
 
           {product.description && (
             <div className="mt-4 whitespace-pre-line rounded-xl bg-card p-4 text-sm ring-1 ring-foreground/10">

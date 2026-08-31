@@ -35,4 +35,5 @@ export async function updateCayThueServicesAction(formData: FormData) {
   });
 
   revalidatePath("/admin/cay-thue");
+  revalidatePath("/vat-pham", "layout");
 }

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
-import { saveCayThueServices } from "@/modules/cms/cay-thue-settings";
+import { saveCayThueServices, type CayThueService } from "@/modules/cms/cay-thue-settings";
 import { writeAuditLog, auditJson } from "@/modules/audit/log";
 
 async function requireAdmin() {
@@ -17,10 +17,15 @@ async function requireAdmin() {
 export async function updateCayThueServicesAction(formData: FormData) {
   const actorUserId = await requireAdmin();
 
-  let services: string[] = [];
+  let services: CayThueService[] = [];
   try {
     const parsed = JSON.parse(String(formData.get("servicesJson") ?? "[]"));
-    if (Array.isArray(parsed)) services = parsed.map(String);
+    if (Array.isArray(parsed)) {
+      services = parsed.map((s) => ({
+        name: String(s?.name ?? "").trim(),
+        price: Math.max(0, Math.round(Number(s?.price) || 0)),
+      }));
+    }
   } catch {
     services = [];
   }

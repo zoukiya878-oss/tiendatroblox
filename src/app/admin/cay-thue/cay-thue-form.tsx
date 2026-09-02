@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import type { CayThueService } from "@/modules/cms/cay-thue-settings";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -19,14 +20,17 @@ export function CayThueForm({
   services: initial,
 }: {
   action: (formData: FormData) => void;
-  services: string[];
+  services: CayThueService[];
 }) {
-  const [services, setServices] = useState<string[]>(initial);
+  const [services, setServices] = useState<CayThueService[]>(initial);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (inputRef.current) inputRef.current.value = JSON.stringify(services);
   }, [services]);
+
+  const update = (idx: number, patch: Partial<CayThueService>) =>
+    setServices((prev) => prev.map((r, i) => (i === idx ? { ...r, ...patch } : r)));
 
   return (
     <form action={action} className="flex flex-col gap-3">
@@ -39,9 +43,19 @@ export function CayThueForm({
       {services.map((s, idx) => (
         <div key={idx} className="flex items-center gap-2">
           <Input
+            className="flex-1"
             placeholder="Tên dịch vụ (VD: Cày level 1-50)"
-            value={s}
-            onChange={(e) => setServices((prev) => prev.map((r, i) => (i === idx ? e.target.value : r)))}
+            value={s.name}
+            onChange={(e) => update(idx, { name: e.target.value })}
+          />
+          <Input
+            type="number"
+            min={0}
+            step={1000}
+            className="w-40"
+            placeholder="Giá (VND)"
+            value={s.price || ""}
+            onChange={(e) => update(idx, { price: Math.max(0, Math.round(Number(e.target.value) || 0)) })}
           />
           <Button
             type="button"
@@ -55,7 +69,12 @@ export function CayThueForm({
       ))}
 
       <div className="flex gap-2">
-        <Button type="button" variant="outline" size="sm" onClick={() => setServices((prev) => [...prev, ""])}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setServices((prev) => [...prev, { name: "", price: 0 }])}
+        >
           + Thêm dịch vụ
         </Button>
         <SubmitButton />

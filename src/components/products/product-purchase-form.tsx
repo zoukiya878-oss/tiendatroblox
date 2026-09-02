@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { addToCartAction } from "@/app/(public)/vat-pham/[slug]/actions";
+import { formatVnd } from "@/lib/money";
 import type { ProductField } from "@prisma/client";
 
 interface FormValues {
@@ -29,7 +30,7 @@ export function ProductPurchaseForm({
   productId: string;
   fields: ProductField[];
   outOfStock: boolean;
-  cayThueServices?: string[];
+  cayThueServices?: { name: string; price: number }[];
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -96,14 +97,20 @@ export function ProductPurchaseForm({
               {...register(f.key, { required: f.required && `Vui lòng chọn ${f.label}` })}
             >
               <option value="">-- Chọn --</option>
-              {(f.key === CAY_THUE_FIELD_KEY && cayThueServices && cayThueServices.length > 0
-                ? cayThueServices
-                : (f.options ?? "").split(",").filter(Boolean)
-              ).map((opt) => (
-                <option key={opt} value={opt.trim()}>
-                  {opt.trim()}
-                </option>
-              ))}
+              {f.key === CAY_THUE_FIELD_KEY && cayThueServices && cayThueServices.length > 0
+                ? cayThueServices.map((s) => {
+                    const label = s.price > 0 ? `${s.name} — ${formatVnd(s.price)}` : s.name;
+                    return (
+                      <option key={s.name} value={label}>
+                        {label}
+                      </option>
+                    );
+                  })
+                : (f.options ?? "").split(",").filter(Boolean).map((opt) => (
+                    <option key={opt} value={opt.trim()}>
+                      {opt.trim()}
+                    </option>
+                  ))}
             </select>
           ) : (
             <Input

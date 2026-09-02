@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { PackageX } from "lucide-react";
 import { formatVnd } from "@/lib/money";
+import { productImage } from "@/lib/image";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,7 +30,7 @@ export function ProductCard({ id, slug, name, price, compareAtPrice, stock, imag
         <div className="relative aspect-square w-full overflow-hidden bg-muted">
           {imageUrl ? (
             <Image
-              src={imageUrl}
+              src={productImage(imageUrl, 500)}
               alt={name}
               fill
               sizes="(max-width: 768px) 50vw, 25vw"

@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { productImage } from "@/lib/image";
 import { ImagePlus } from "lucide-react";
 import type { DeliveryType, Product, ProductField, ProductFieldType, ProductImage } from "@prisma/client";
 
@@ -50,7 +51,7 @@ export function ProductForm({
   action: (formData: FormData) => void;
   categories: { id: string; name: string }[];
   product?: Product & { images: ProductImage[]; fields: ProductField[] };
-  cayThueServices?: string[];
+  cayThueServices?: { name: string; price: number }[];
 }) {
   const [name, setName] = useState(product?.name ?? "");
   const [slug, setSlug] = useState(product?.slug ?? "");
@@ -107,7 +108,7 @@ export function ProductForm({
         type: "SELECT",
         required: true,
         placeholder: "",
-        options: cayThueServices.join(","),
+        options: cayThueServices.map((s) => s.name).join(","),
         sortOrder: prev.length,
       },
     ]);
@@ -250,7 +251,7 @@ export function ProductForm({
           <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
             {images.map((img, idx) => (
               <div key={idx} className="group relative aspect-square overflow-hidden rounded-lg border border-border">
-                <img src={img.url} alt={img.alt} className="size-full object-cover" />
+                <img src={productImage(img.url, 200)} alt={img.alt} className="size-full object-cover" />
                 <button
                   type="button"
                   onClick={() => setImages((prev) => prev.filter((_, i) => i !== idx))}

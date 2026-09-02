@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { Prisma } from "@prisma/client";
+import { productImage } from "@/lib/image";
 import { duplicateProductAction, toggleProductActiveAction } from "./actions";
 
 export default async function AdminProductsPage({
@@ -62,7 +63,7 @@ export default async function AdminProductsPage({
                 <TableCell>
                   {p.images[0] ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={p.images[0].url} alt={p.name} className="size-10 rounded object-cover" />
+                    <img src={productImage(p.images[0].url, 80)} alt={p.name} className="size-10 rounded object-cover" />
                   ) : (
                     <div className="size-10 rounded bg-muted" />
                   )}

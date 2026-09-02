@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ChevronRight, PackageX } from "lucide-react";
 import { getProductBySlug, getRelatedProducts } from "@/modules/products/get-product";
 import { getCayThueServices } from "@/modules/cms/cay-thue-settings";
+import { productImage } from "@/lib/image";
 import { formatVnd } from "@/lib/money";
 import { Badge } from "@/components/ui/badge";
 import { ProductCard } from "@/components/products/product-card";
@@ -43,7 +44,7 @@ export default async function ProductDetailPage({
         <div className="flex flex-col gap-3">
           <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-card">
             {product.images[0] ? (
-              <Image src={product.images[0].url} alt={product.images[0].alt ?? product.name} fill className="object-cover" priority />
+              <Image src={productImage(product.images[0].url, 900)} alt={product.images[0].alt ?? product.name} fill className="object-cover" priority />
             ) : (
               <div className="flex h-full items-center justify-center text-muted-foreground">
                 <PackageX className="size-10" />
@@ -54,7 +55,7 @@ export default async function ProductDetailPage({
             <div className="grid grid-cols-5 gap-2">
               {product.images.map((img) => (
                 <div key={img.id} className="relative aspect-square overflow-hidden rounded-lg bg-card ring-1 ring-foreground/10">
-                  <Image src={img.url} alt={img.alt ?? product.name} fill className="object-cover" />
+                  <Image src={productImage(img.url, 200)} alt={img.alt ?? product.name} fill className="object-cover" />
                 </div>
               ))}
             </div>

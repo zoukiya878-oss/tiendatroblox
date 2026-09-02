@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatVnd } from "@/lib/money";
+import { productImage } from "@/lib/image";
 import { getOrCreateCart } from "@/modules/cart/cart-service";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckoutForm } from "./checkout-form";
@@ -72,7 +73,7 @@ export default async function CheckoutPage({
               <div className="size-14 shrink-0 overflow-hidden rounded-lg bg-muted">
                 {item.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={item.imageUrl} alt={item.name} className="size-full object-cover" />
+                  <img src={productImage(item.imageUrl, 120)} alt={item.name} className="size-full object-cover" />
                 ) : null}
               </div>
               <div className="min-w-0 flex-1">

@@ -2,6 +2,7 @@ import { randomUUID } from "crypto";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { cayThueExtra, type CayThueService } from "@/lib/cay-thue";
 
 const CART_COOKIE = "cart_session_id";
 
@@ -118,8 +119,16 @@ export async function removeItem(cartItemId: string) {
   await prisma.cartItem.delete({ where: { id: cartItemId } });
 }
 
-export function getCartTotal(cart: { items: { quantity: number; product: { price: bigint } }[] }): bigint {
-  return cart.items.reduce((sum, i) => sum + i.product.price * BigInt(i.quantity), 0n);
+export function getCartTotal(
+  cart: {
+    items: { quantity: number; customFields?: unknown; product: { price: bigint } }[];
+  },
+  cayThueServices: CayThueService[] = []
+): bigint {
+  return cart.items.reduce((sum, i) => {
+    const extra = cayThueExtra(i.customFields as Record<string, string> | null, cayThueServices);
+    return sum + (i.product.price + extra) * BigInt(i.quantity);
+  }, 0n);
 }
 
 /** Moves CartItems from the anonymous (cookie) cart into the user's cart. Call on login. */

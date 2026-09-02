@@ -3,6 +3,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatVnd } from "@/lib/money";
 import { productImage } from "@/lib/image";
+import { cayThueExtra } from "@/lib/cay-thue";
+import { getCayThueServices } from "@/modules/cms/cay-thue-settings";
 import { getOrCreateCart } from "@/modules/cart/cart-service";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckoutForm } from "./checkout-form";
@@ -20,6 +22,16 @@ export default async function CheckoutPage({
   }
 
   const { buyNow, qty, fields } = await searchParams;
+  const cayThueServices = await getCayThueServices();
+
+  let buyNowCustomFields: Record<string, string> | undefined;
+  if (fields) {
+    try {
+      buyNowCustomFields = JSON.parse(fields);
+    } catch {
+      buyNowCustomFields = undefined;
+    }
+  }
 
   let items: DisplayItem[];
   const hiddenFields: Record<string, string> = { mode: "cart" };
@@ -37,7 +49,7 @@ export default async function CheckoutPage({
         key: product.id,
         name: product.name,
         imageUrl: product.images[0]?.url ?? null,
-        price: product.price,
+        price: product.price + cayThueExtra(buyNowCustomFields, cayThueServices),
         quantity,
       },
     ];
@@ -52,7 +64,9 @@ export default async function CheckoutPage({
       key: i.id,
       name: i.product.name,
       imageUrl: i.product.images[0]?.url ?? null,
-      price: i.product.price,
+      price:
+        i.product.price +
+        cayThueExtra(i.customFields as Record<string, string> | null, cayThueServices),
       quantity: i.quantity,
     }));
   }

@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { debitWallet, InsufficientBalanceError } from "@/modules/wallets/wallet-service";
 import { validateAndComputeDiscount, CouponError } from "@/modules/coupons/validate-coupon";
+import { getCayThueServices } from "@/modules/cms/cay-thue-settings";
+import { cayThueExtra } from "@/lib/cay-thue";
 import { generateOrderCode } from "./order-code";
 
 export class OutOfStockError extends Error {
@@ -28,6 +30,8 @@ export { InsufficientBalanceError, CouponError };
 export async function createOrder(input: CheckoutInput) {
   const { userId, items, couponCode } = input;
   if (items.length === 0) throw new ValidationFailedError("Giỏ hàng trống");
+
+  const cayThueServices = await getCayThueServices();
 
   return prisma.$transaction(async (tx) => {
     const products = await tx.product.findMany({
@@ -73,7 +77,9 @@ export async function createOrder(input: CheckoutInput) {
       });
       if (stockUpdate.count === 0) throw new OutOfStockError(product.name);
 
-      const lineSubtotal = product.price * BigInt(item.quantity);
+      // Phụ phí dịch vụ cày thuê (nếu SP có dropdown "dich-vu-cay-thue" và khách đã chọn).
+      const extra = cayThueExtra(item.customFields, cayThueServices);
+      const lineSubtotal = (product.price + extra) * BigInt(item.quantity);
       subtotal += lineSubtotal;
 
       const fieldSnapshots = product.fields.map((f) => ({
@@ -98,7 +104,7 @@ export async function createOrder(input: CheckoutInput) {
         productId: product.id,
         productCode: product.code,
         productName: product.name,
-        unitPrice: product.price,
+        unitPrice: product.price + extra,
         quantity: item.quantity,
         subtotal: lineSubtotal,
         fields: fieldSnapshots,

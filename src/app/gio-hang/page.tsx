@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { getOrCreateCart, getCartTotal } from "@/modules/cart/cart-service";
+import { getCayThueServices } from "@/modules/cms/cay-thue-settings";
+import { cayThueExtra } from "@/lib/cay-thue";
 import { formatVnd } from "@/lib/money";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,7 +9,8 @@ import { CartItemRow } from "./cart-item-row";
 
 export default async function CartPage() {
   const cart = await getOrCreateCart();
-  const total = getCartTotal(cart);
+  const cayThueServices = await getCayThueServices();
+  const total = getCartTotal(cart, cayThueServices);
 
   if (cart.items.length === 0) {
     return (
@@ -31,7 +34,10 @@ export default async function CartPage() {
               id={item.id}
               name={item.product.name}
               imageUrl={item.product.images[0]?.url ?? null}
-              price={item.product.price}
+              price={
+                item.product.price +
+                cayThueExtra(item.customFields as Record<string, string> | null, cayThueServices)
+              }
               quantity={item.quantity}
             />
           ))}

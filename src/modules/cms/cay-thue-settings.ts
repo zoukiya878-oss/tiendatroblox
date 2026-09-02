@@ -1,14 +1,12 @@
 import { prisma } from "@/lib/prisma";
+import type { CayThueService } from "@/lib/cay-thue";
+
+export type { CayThueService } from "@/lib/cay-thue";
 
 const KEY = "cay_thue_services";
 
-export interface CayThueService {
-  name: string;
-  price: number; // VND nguyên, 0 = chưa đặt giá
-}
-
 // ponytail: giá lưu Number trong JSON SiteSetting (không phải money-path DB) —
-// khách chọn xong giá trị chỉ hiển thị trong đơn, không tự cộng vào total.
+// khách chọn xong phụ phí được cộng vào subtotal đơn (xem lib/cay-thue.ts).
 function normalize(raw: unknown): CayThueService {
   if (typeof raw === "string") return { name: raw.trim(), price: 0 };
   const o = raw as { name?: unknown; price?: unknown };

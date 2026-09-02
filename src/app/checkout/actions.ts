@@ -15,6 +15,8 @@ import {
   type CheckoutItemInput,
 } from "@/modules/orders/create-order";
 import { validateAndComputeDiscount } from "@/modules/coupons/validate-coupon";
+import { getCayThueServices } from "@/modules/cms/cay-thue-settings";
+import { cayThueExtra } from "@/lib/cay-thue";
 
 export type CheckoutState = {
   error?: string;
@@ -50,10 +52,15 @@ async function resolveItems(formData: FormData): Promise<CheckoutItemInput[]> {
 }
 
 async function computeSubtotal(items: CheckoutItemInput[]): Promise<bigint> {
-  const products = await prisma.product.findMany({ where: { id: { in: items.map((i) => i.productId) } } });
+  const [products, cayThueServices] = await Promise.all([
+    prisma.product.findMany({ where: { id: { in: items.map((i) => i.productId) } } }),
+    getCayThueServices(),
+  ]);
   return items.reduce((sum, i) => {
     const p = products.find((p) => p.id === i.productId);
-    return p ? sum + p.price * BigInt(i.quantity) : sum;
+    if (!p) return sum;
+    const extra = cayThueExtra(i.customFields, cayThueServices);
+    return sum + (p.price + extra) * BigInt(i.quantity);
   }, 0n);
 }
 

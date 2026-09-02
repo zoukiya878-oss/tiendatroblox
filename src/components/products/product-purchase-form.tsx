@@ -10,16 +10,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { addToCartAction } from "@/app/(public)/vat-pham/[slug]/actions";
-import { formatVnd } from "@/lib/money";
+import { CAY_THUE_FIELD_KEY, cayThueLabel, type CayThueService } from "@/lib/cay-thue";
 import type { ProductField } from "@prisma/client";
 
 interface FormValues {
   quantity: number;
   [key: string]: string | number;
 }
-
-// Field key cố định do nút "+ Dropdown dịch vụ cày thuê" trong form admin sinh ra.
-const CAY_THUE_FIELD_KEY = "dich-vu-cay-thue";
 
 export function ProductPurchaseForm({
   productId,
@@ -30,7 +27,7 @@ export function ProductPurchaseForm({
   productId: string;
   fields: ProductField[];
   outOfStock: boolean;
-  cayThueServices?: { name: string; price: number }[];
+  cayThueServices?: CayThueService[];
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -99,7 +96,7 @@ export function ProductPurchaseForm({
               <option value="">-- Chọn --</option>
               {f.key === CAY_THUE_FIELD_KEY && cayThueServices && cayThueServices.length > 0
                 ? cayThueServices.map((s) => {
-                    const label = s.price > 0 ? `${s.name} — ${formatVnd(s.price)}` : s.name;
+                    const label = cayThueLabel(s);
                     return (
                       <option key={s.name} value={label}>
                         {label}

@@ -43,13 +43,6 @@ export default async function ProductDetailPage({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
-      {isAdmin && (
-        <AdminEditProductDialog
-          product={product}
-          categories={adminCategories}
-          cayThueServices={adminCayThue}
-        />
-      )}
       <nav className="mb-4 flex items-center gap-1.5 text-sm text-muted-foreground">
         <Link href="/" className="hover:text-foreground">Trang chủ</Link>
         <ChevronRight className="size-3.5" />
@@ -83,6 +76,13 @@ export default async function ProductDetailPage({
         </div>
 
         <div className="flex flex-col gap-4">
+          {isAdmin && (
+            <AdminEditProductDialog
+              product={product}
+              categories={adminCategories}
+              cayThueServices={adminCayThue}
+            />
+          )}
           <h1 className="font-heading text-2xl font-bold">{product.name}</h1>
 
           <div className="flex items-center gap-3">

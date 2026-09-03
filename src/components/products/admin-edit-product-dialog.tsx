@@ -23,13 +23,9 @@ export function AdminEditProductDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger
-        render={
-          <Button variant="outline" size="sm" className="fixed bottom-4 right-4 z-40 shadow-lg" />
-        }
-      >
+      <DialogTrigger render={<Button variant="outline" size="sm" className="w-fit" />}>
         <Pencil className="size-3.5" />
-        Sửa sản phẩm
+        Sửa sản phẩm (admin)
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
         <DialogHeader>

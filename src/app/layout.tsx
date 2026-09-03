@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/footer";
 import { PromoBar } from "@/components/layout/promo-bar";
 import { AnnouncementPopup } from "@/components/layout/announcement-popup";
 import { FloatingSupport } from "@/components/layout/floating-support";
+import { FloatingAdmin } from "@/components/layout/floating-admin";
 import { ShopChromeGate } from "@/components/layout/shop-chrome-gate";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { getSiteSettings } from "@/modules/cms/site-settings";
@@ -47,6 +48,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     getActiveAnnouncement(),
     auth(),
   ]);
+  const role = (session?.user as { role?: string } | undefined)?.role;
+  const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
   const wallet = session?.user?.id
     ? await prisma.wallet.findUnique({ where: { userId: session.user.id }, select: { balance: true } })
     : null;
@@ -75,6 +78,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <ShopChromeGate>
           <Footer settings={settings} />
           <FloatingSupport settings={settings} />
+          {isAdmin && <FloatingAdmin />}
           {announcement && <AnnouncementPopup announcement={announcement} />}
           <MobileBottomNav settings={settings} user={session?.user ?? null} walletBalance={wallet?.balance ?? 0n} />
         </ShopChromeGate>

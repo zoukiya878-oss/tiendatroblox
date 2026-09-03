@@ -23,6 +23,7 @@ import {
   ScrollText,
   Percent,
   Gamepad2,
+  Home,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -48,6 +49,14 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   return (
     <nav className="flex flex-col gap-1">
+      <Link
+        href="/"
+        onClick={onNavigate}
+        className="mb-1 flex items-center gap-2.5 rounded-lg border border-border px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      >
+        <Home className="size-4 shrink-0" />
+        Về trang chủ
+      </Link>
       {NAV_ITEMS.map((item) => {
         const active = item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href);
         return (

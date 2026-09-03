@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatVnd } from "@/lib/money";
+import { CAY_THUE_FIELD_KEY, formatCayThuePicked } from "@/lib/cay-thue";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,7 +62,8 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
                     <ul className="mt-2 text-xs text-muted-foreground">
                       {item.fields.map((f) => (
                         <li key={f.id}>
-                          {f.fieldLabel}: {f.value}
+                          {f.fieldLabel}:{" "}
+                          {f.fieldKey === CAY_THUE_FIELD_KEY ? formatCayThuePicked(f.value) : f.value}
                         </li>
                       ))}
                     </ul>

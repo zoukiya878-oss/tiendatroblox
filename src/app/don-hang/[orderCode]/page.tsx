@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatVnd } from "@/lib/money";
+import { CAY_THUE_FIELD_KEY, formatCayThuePicked } from "@/lib/cay-thue";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -71,7 +72,11 @@ export default async function DonHangDetailPage({
                   {item.fields.map((field) => (
                     <div key={field.id} className="flex justify-between gap-4">
                       <span className="text-muted-foreground">{field.fieldLabel}</span>
-                      <span className="font-medium">{field.value}</span>
+                      <span className="whitespace-pre-line text-right font-medium">
+                        {field.fieldKey === CAY_THUE_FIELD_KEY
+                          ? formatCayThuePicked(field.value)
+                          : field.value}
+                      </span>
                     </div>
                   ))}
                 </div>

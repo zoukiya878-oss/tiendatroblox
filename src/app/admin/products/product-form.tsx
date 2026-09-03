@@ -103,7 +103,7 @@ export function ProductForm({
     setFields((prev) => [
       ...prev,
       {
-        label: "Chọn dịch vụ cày thuê",
+        label: "Chọn dịch vụ cày thuê (chọn được nhiều)",
         key: "dich-vu-cay-thue",
         type: "SELECT",
         required: true,

@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import { ChevronRight, PackageX } from "lucide-react";
 import { getProductBySlug, getRelatedProducts } from "@/modules/products/get-product";
 import { getCayThueServices } from "@/modules/cms/cay-thue-settings";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { AdminEditProductDialog } from "@/components/products/admin-edit-product-dialog";
 import { productImage } from "@/lib/image";
 import { formatVnd } from "@/lib/money";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +22,16 @@ export default async function ProductDetailPage({
   const product = await getProductBySlug(slug);
   if (!product) notFound();
 
+  const session = await auth();
+  const role = (session?.user as { role?: string } | undefined)?.role;
+  const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
+  const [adminCategories, adminCayThue] = isAdmin
+    ? await Promise.all([
+        prisma.category.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } }),
+        getCayThueServices(),
+      ])
+    : [[], []];
+
   const related = await getRelatedProducts(product.categoryId, product.id, 4);
   // Dropdown cày thuê đọc trực tiếp từ /admin/cay-thue (không dùng options snapshot cũ).
   const hasCayThueField = product.fields.some((f) => f.key === "dich-vu-cay-thue");
@@ -30,6 +43,13 @@ export default async function ProductDetailPage({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
+      {isAdmin && (
+        <AdminEditProductDialog
+          product={product}
+          categories={adminCategories}
+          cayThueServices={adminCayThue}
+        />
+      )}
       <nav className="mb-4 flex items-center gap-1.5 text-sm text-muted-foreground">
         <Link href="/" className="hover:text-foreground">Trang chủ</Link>
         <ChevronRight className="size-3.5" />

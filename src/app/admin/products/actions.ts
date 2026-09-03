@@ -160,6 +160,31 @@ export async function updateProductAction(id: string, formData: FormData) {
   redirect("/admin/products");
 }
 
+// Sửa nhanh từ trang sản phẩm ngoài storefront — giống updateProductAction
+// nhưng ở lại trang sản phẩm thay vì nhảy về /admin/products.
+export async function updateProductInlineAction(id: string, formData: FormData) {
+  const actorUserId = await requireAdmin();
+  const before = await prisma.product.findUniqueOrThrow({ where: { id } });
+  const input = await buildProductInput(formData);
+  if (!input.name || !input.slug || !input.code || !input.categoryId) {
+    throw new Error("Thiếu thông tin bắt buộc");
+  }
+
+  const product = await updateProduct(id, input);
+  await writeAuditLog({
+    actorUserId,
+    action: "PRODUCT_UPDATE",
+    entityType: "Product",
+    entityId: product.id,
+    beforeData: auditJson(before),
+    afterData: auditJson(product),
+  });
+
+  revalidateProductPages(before.slug);
+  revalidateProductPages(product.slug);
+  redirect(`/vat-pham/${product.slug}`);
+}
+
 export async function duplicateProductAction(id: string) {
   const actorUserId = await requireAdmin();
   const product = await duplicateProduct(id);

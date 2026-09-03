@@ -251,7 +251,7 @@ export function ProductForm({
           <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
             {images.map((img, idx) => (
               <div key={idx} className="group relative aspect-square overflow-hidden rounded-lg border border-border">
-                <img src={productImage(img.url, 200)} alt={img.alt} className="size-full object-cover" />
+                <img src={productImage(img.url, 200)} alt={img.alt} className="size-full object-contain" />
                 <button
                   type="button"
                   onClick={() => setImages((prev) => prev.filter((_, i) => i !== idx))}

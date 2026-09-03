@@ -27,7 +27,7 @@ export function CartItemRow({
       <div className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-muted">
         {imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={productImage(imageUrl, 120)} alt={name} className="size-full object-cover" />
+          <img src={productImage(imageUrl, 120)} alt={name} className="size-full object-contain" />
         ) : null}
       </div>
 

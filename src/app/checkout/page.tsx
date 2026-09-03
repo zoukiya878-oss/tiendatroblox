@@ -87,7 +87,7 @@ export default async function CheckoutPage({
               <div className="size-14 shrink-0 overflow-hidden rounded-lg bg-muted">
                 {item.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={productImage(item.imageUrl, 120)} alt={item.name} className="size-full object-cover" />
+                  <img src={productImage(item.imageUrl, 120)} alt={item.name} className="size-full object-contain" />
                 ) : null}
               </div>
               <div className="min-w-0 flex-1">

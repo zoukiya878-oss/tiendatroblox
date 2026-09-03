@@ -63,7 +63,7 @@ export default async function AdminProductsPage({
                 <TableCell>
                   {p.images[0] ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={productImage(p.images[0].url, 80)} alt={p.name} className="size-10 rounded object-cover" />
+                    <img src={productImage(p.images[0].url, 80)} alt={p.name} className="size-10 rounded object-contain" />
                   ) : (
                     <div className="size-10 rounded bg-muted" />
                   )}
